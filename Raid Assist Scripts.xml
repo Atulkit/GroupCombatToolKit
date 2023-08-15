@@ -1,0 +1,670 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<ScriptPackage>
+		<ScriptGroup isActive="yes" isFolder="yes">
+			<name>Raid assist</name>
+			<packageName></packageName>
+			<script>
+--Set all initial default variables, some will be overwritten when settings finish loading 
+ra = ra or {}
+ra.Settings = ra.Settings or {}
+ra_list = ra_list or {}
+
+ra.Settings.TargetSwitch = ra.Settings.TargetSwitch or "manual"
+ra.Settings.SetEnemy = ra.Settings.SetEnemy or "Yep"
+ra.Settings.SetTarget = ra.Settings.SetTarget or false
+ra.Settings.OverRide = ra.Settings.OverRide or false
+ra.Settings.MoveReporting = ra.Settings.MoveReporting or false
+ra.Settings.AffCalling = ra.Settings.AffCalling or false
+ra.Settings.CityTargeting = ra.Settings.CityTargeting or "none"
+
+ra.ListEnemied = ra.ListEnemied or "Nope"
+ra.IsLeader = ra.IsLeader or false
+ra.Remove = ra.Remove or false
+ra.target_list = ra.target_list or {}
+ra.BurstTimers = ra.BurstTimer or {}
+ra.bursted = ra.bursted or {}
+ra.InRoom = ra.InRoom or {}
+ra.Leader = ra.Leader or ""
+ra.Caller = ra.Caller or ""
+ra.Caller2 = ra.Caller2 or ""
+ra.SoulList = ra.SoulList or {}
+ra.SoulTimers = ra.SoulTimers or {}
+ra.ToTarget = ra.ToTarget or "none"
+
+ra.TempTargetList = ra.TempTargetList or {}
+
+ra.DontTarget = ra.DontTarget or {}
+
+
+--Turn on use of capturing Leader change if targetassist system is present
+if targetassist then
+	enableAlias("GL from targetassist")
+	else
+	disableAlias("GL from targetassist")
+	targetassist = false
+	
+end
+</script>
+			<eventHandlerList />
+			<Script isActive="yes" isFolder="no">
+				<name>Changelog</name>
+				<packageName></packageName>
+				<script>--Note: Some features are AK dependent.
+
+--[[
+Versions:
+0.9- Initial testing begins
+Changed colour scheme
+Added zBW &lt;city&gt;
+
+0.91-
+Added name checking function for reflexes
+Added function to place into target alias to capture with manual targeting
+Added zSWAP &lt;name&gt; &lt;#&gt; function
+Added zLOUD - Allows calling of targets when not the lead
+Made slain target check if target is on burst list already for really quick kills to remove them and allow retargting
+
+0.92
+Added Soul tracking- Used to skip over dead people when retargeting.. They're on the list for 45 seconds and removed if bursted
+Added zt &lt;partial name&gt; ability- used to target someone from the list with only first couple letters for quick switch with partial name 
+	-not to be confused with plain zt alias used by people in party to manual swap to target called by leader.
+	
+Still to add for souls- If message received the person isn't there to hit, compare if your current target variable person is present in the room list 
+that is ra.InRoom because if you can't hit them but they are appearing in gmcp.room.players they must be a soul. Add them to the soul list 
+
+0.93
+Added detection of a soul with the following methods
+- Trying to hit a target and recieving the message they're not able to be hit.. If this happens, these will check ra.InRoom and soul them if they are
+- If a soul talks
+- From a room description (not on entering a room) When zR is done QL gets done already, so I added trying to pick souls up from room description.. This is not tested yet
+		--That reflex looks like this so kinda basic and might not fire with word wrapping hence the previous method... soul of (\w+)  
+		
+0.94
+Changed room descrition capturing of souls. Likely didn't work as intended and captured only one name in 0.93 
+
+
+0.95
+Added
+- Adding targets to the order, from the room into target order by city or all. zAR   stands for Add Room  
+- Started adding highlights for target leaving room and made toggleable
+Changed RoomGag for room targeting to now use the room title to gag room description. NO MORE COLOUR TRIGGERS! YEAH!
+Changed zLOAD to check who's online and bring over only them from a target order so you don't have to remove a bunch of people!
+Updated zHELP and zSTAT2 a bunch to reflect additions form past and current update 
+Made some changes to echos in attempt to show they came from the system for easier tracking down
+
+1.0
+Finished fixing a few bugs and implimenting a few more target moved out of room lines
+Fixed trying to hit someone thats not your target and the not hear line firing saying target not hear- now the system looks at last command sent for trying to hit target
+
+
+1.1
+Added deliverance and incandescence tracking and avoided targetting
+
+1.2
+Added GMCP text checking for anti-illusion measure
+
+
+1.7 (Atuls Updates)
+Special thanks to Hhaos and Kshavatra for the help and providing some of the code.
+Started to remove or comment out a lot of code related to 'targetassist' package.
+Updated system messages to be slightly less spammy
+Added zTC alias to enable backup target callers to be followed
+Added zGROUP alias to report system status to party (leader, callers, target, enemies, etc)
+- zGROUP defaults to 'Atul' as leader. CHANGE THIS.
+Updated zSTAT and zSTAT2 with more comprehensive infomation
+Updated Party Target trigger. Added exit statement so swapping and calling doesn't happen if target called is already targeted. Prevents endless loops.
+Updated ZHELP and ZHELP2 aliases with up to date information and aliases.
+Added Party Aff Tracking folder to triggers (ONLY USE IF YOU HAVE AK)
+Added Aff Reporting folders to triggers (REQUIRES AK)
+Added Party Gag trigger to gag party messages (DISABLE THIS IF YOU DO NOT PUSH MESSAGES TO A WINDOW)
+- Requires AK for affliction tracking and reporting.
+- Requires adding the following code to OppGainedAff function in AK 'oscore edit functions' script
+   - In oscore edit functions add the following at the beginning of the function
+           -- todo: REMOVE THIS LATER WHEN YOU ADD PARTY CALLS
+          local do_not_report = {
+            -- "paralysis",
+            "",
+            " "
+          }
+        
+          if gmcp.Char.Status.class ~= "Alchemist" then
+            table.insert(do_not_report, "impatience")
+          end
+          
+          local raff = aff:lower()
+          raff = string.split(raff, " ")
+          for _, v in ipairs(raff) do
+            if (not table.contains(do_not_report, v) and not table.contains(ra.affs_to_report, v)) then
+              table.insert(ra.affs_to_report, v)
+            end
+          end
+          --normal OppGainedAff script below
+          
+1.8 Atul's Retooling
+[Alias] zTC -  Able to clear or switch target callers now
+[Trigger] RA Target called edited - Manual targeting no longer auto switches targets on party calls.
+[Trigger] RA Target called edited - Auto targeting will now assign party target to ra.ToTarget even if target is not in users room. Adds functionality to zT alias.
+[Alias] zT - Will now follow ra.ToTarget. Lets users quickly switch to last party target called even if target is not in the room.
+[Trigger] Party Gag - Changed to only gag third party 'says' messages. Note: Disable this trigger if you don't push messages to a console window.
+[Trigger] Party Calls - Adds lines for a few more variations on afflictions called to party.
+[Alias] Reset target and callers - Now resets target list, target, leader, and target callers to default settings.
+[Script] Target list order - Added Legacy NDB functionality to show classes in target order.
+--]]
+</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="no" isFolder="no">
+				<name>Your stuff</name>
+				<packageName></packageName>
+				<script>--!!!!!Important below!!!!!
+--[[
+If you have target tracking stuff or display things that need reseting, put that stuff inside the function ra.YourTargetStuff() below and remove comment blocks
+Move this outside of the folder so future updates don't remove your changes
+Examples provided inside of the comment blocks below is mine. It's blocked out so if you update- this new one coming in will be disabled and
+yours that you took out of the folder will still keep working
+--]]
+
+
+
+--[[ 					Delete this line here with the brackets
+
+function ra.YourTargetStuff()
+	--ak.oresetparse()
+	sendAll("unally "..target, "enemy "..target, "st "..target, false)	--Included to ensure target is enemied, good if lead calls a target not on listed. If spammy, remove enemy stuff but keep st target..
+	--GUI.Icon4:echo("&lt;center&gt;Target: " .. gmcp.Char.Status.target) 			--Personal GUI display refresh
+end
+
+registerAnonymousEventHandler("RA Target Changed", "ra.YourTargetStuff")
+
+
+
+--]] --Delete this line with the brackets as well
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--Line below here is used to raise a target change event if you wish to add target switching stuff to the system and run the above function
+--raiseEvent("RA Target Changed")</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Useful for you</name>
+				<packageName></packageName>
+				<script>--This function takes a name you pass it to check if a person is on your target list to act on. Returns true if they are or false
+-- Use it like this usually in a reflex... ra.IsTarget(matches[2]) ... if you want to reflexively do something to a person on your list 
+function ra.IsTarget(name)
+	if table.contains(ra.target_list, name) then
+		return true
+	else
+		return false
+	end
+end
+
+
+--This funciton takes a name you give it and adds it to your target list. Good to add this to your general target alias to easily grab names
+--See useful code snippets for how to work this in to your alias without adding random stuff to your target list 
+function ra.TargetAdd(name)
+	if not table.contains(ra.target_list, name) then
+		table.insert(ra.target_list, name)
+	end
+end</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Target change</name>
+				<packageName></packageName>
+				<script>--Script handling swapping targets
+--Burst check gets called if the person who died is your target and you like having your target changed
+--Burstcheck looks at a list of recently bursted people and if your target isn't on it, looks for a new target in the room
+
+function ra.Burstcheck(name)
+	if not table.contains(ra.bursted, name) then
+		ra.RoomTarget()
+	end
+end
+
+</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Target list ordering</name>
+				<packageName></packageName>
+				<script>--Display target list for reordering, this makes clickable dialog to shift target order around or remove people
+function ra.order_report()
+
+	cecho("\n&lt;OrangeRed&gt;---Reorder target list---  ("..#ra.target_list..")\n")
+	
+	--For loop to iterate over enemy list to display the clickable links to reorder. Each link calls a below function
+	for n,v in pairs (ra.target_list) do
+  	
+		cechoLink("&lt;blue&gt;^^", [[ra.Shift_top("]]..v..[[")]], "Send "..v.." to first",	true)
+		echo(" ")
+		cechoLink("&lt;medium_aquamarine&gt;Up", [[ra.Shift_up("]]..v..[[")]], "Send "..v.." up one",	true)
+		echo(" ")
+		cechoLink("&lt;medium_aquamarine&gt;Down", [[ra.Shift_down("]]..v..[[")]], "Send "..v.." down one",	true)
+		echo(" ")
+		cechoLink("&lt;blue&gt;vv", [[ra.Shift_bottom("]]..v..[[")]], "Send "..v.." to last",	true)
+		echo(" ")
+		if Legacy.NDB then
+			if Legacy.NDB.db[v] then --added this check to display with or without class, if Legacy NDB doesn't know them then it will still display
+         --If Legacy NDB is present then the class of each person is added
+				cechoLink("&lt;IndianRed&gt;" ..v.. " &lt;grey&gt;("..Legacy.NDB.db[v].class:title().. ")",[[appendCmdLine("zswap ]]..v..[[ ")]] ,"", true)
+      else 
+        --cecho("&lt;IndianRed&gt;" ..v)
+				cechoLink("&lt;IndianRed&gt;" ..v,[[appendCmdLine("zswap ]]..v..[[ ")]],"", true) 
+      end 
+		elseif ndb then
+      if ndb.isperson(v) then --added this check to display with or without class, if NDB doesn't know them then it will still display
+         --If NDB is present then the class of each person is added
+				cechoLink("&lt;IndianRed&gt;" ..v.. " &lt;grey&gt;("..ndb.getclass(v).. ")",[[appendCmdLine("zswap ]]..v..[[ ")]] ,"", true) 
+  
+      else
+				--cecho("&lt;IndianRed&gt;" ..v)
+				cechoLink("&lt;IndianRed&gt;" ..v,[[appendCmdLine("zswap ]]..v..[[ ")]],"", true) 
+			end
+		else
+			--cecho("&lt;red&gt;" ..v.. "\n")
+			cechoLink("&lt;IndianRed&gt;" ..v,[[appendCmdLine("zswap ]]..v..[[ ")]],"", true)
+		end
+		echo("  ")
+		cechoLink("&lt;blue&gt;Remove\n", [[ra.Shift_remove("]]..v..[[")]], "Remove "..v.." from target list",	true)
+
+  end
+	echo("\n")
+end
+
+
+
+--Shift a name up one 
+function ra.Shift_up(name)
+	local position = table.index_of(ra.target_list, name)
+	table.remove(ra.target_list, position)
+	table.insert(ra.target_list,position-1,name)
+	ra.order_report()
+end
+
+
+--Shift a name down one
+function ra.Shift_down(name)
+	local position = table.index_of(ra.target_list, name)
+	table.remove(ra.target_list, position)
+	table.insert(ra.target_list,position+1,name)
+	ra.order_report()
+end
+
+--Move a name to top of list
+function ra.Shift_top(name)
+	local position = table.index_of(ra.target_list, name)
+	table.remove(ra.target_list, position)
+	table.insert(ra.target_list, 1,name)
+	ra.order_report()
+end
+
+--Move a name to bottom of list
+function ra.Shift_bottom(name)
+	local position = table.index_of(ra.target_list, name)
+	table.remove(ra.target_list, position)
+	table.insert(ra.target_list, name)
+	ra.order_report()
+end
+
+--Remove a name from the list
+function ra.Shift_remove(name)
+	local position = table.index_of(ra.target_list, name)
+	table.remove(ra.target_list, position)
+	ra.autoUnenemy(name)
+	ra.order_report()
+end</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Save and load presets and settings</name>
+				<packageName></packageName>
+				<script>--Save function to create presets
+function ra.save(name)
+	
+	--capitalize to avoid errors
+	--Uses the variables saveName- what you call the list- and savelist- to copy over ra.target_list to save
+	local saveName = name:lower():title()
+	local savelist = table.deepcopy(ra.target_list)
+	
+	--Check if it's already a preset or if the target list is empty to not save
+	if table.contains(ra_list, saveName) then
+			cecho("\n&lt;OranageRed&gt;(CombAtul): That list already exists!")
+		elseif savelist == "" then
+			cecho("\n&lt;OranageRed&gt;(CombAtul): Can't save an empty list!")
+		else
+  		--Adds the enemylist to the storage list ra_list as a key/pair and saves to Mudlet folder folder
+			ra_list[tostring(saveName)] = savelist
+  		table.save(getMudletHomeDir().."/RaidAssistPresets.lua", ra_list)		--the save command
+			cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt;Saved preset: &lt;cyan&gt;"..saveName)	
+	end
+end
+
+--Load preset list function
+function ra.load()
+	if io.exists(getMudletHomeDir().."/RaidAssistPresets.lua") then 			--Check there is a file to load
+  	table.load(getMudletHomeDir().."/RaidAssistPresets.lua", ra_list)		--Attempts to load table into ra_list
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;light_blue&gt;Loaded presets..")
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;light_blue&gt; No saved preset list found. Have you saved one before?")
+	end
+end
+
+--Set targetlist to the requested preset name passed to it
+function ra.setpreset(name2)
+	local name = name2:lower():title()
+	if table.contains(ra_list, name) then
+			if ra.Settings.SetEnemy == "Yep" then
+				send("unenemy all")
+			end
+    	ra.target_list = table.deepcopy(ra_list[tostring(name)])											--uses deepcopy to not link the tables 
+    	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Swapped to preset: &lt;cyan&gt;"..name)
+		else
+			cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;I don't know that list name.")
+	end
+	if ra.Settings.SetEnemy == "Yep" then 																					--checks if it should enemy the list
+		ra.autoEnemyList()
+	end	
+end
+
+
+function ra.loadpreset(name2)
+	local name = name2:lower():title()
+	if table.contains(ra_list, name) then
+			if ra.Settings.SetEnemy == "Yep" then
+				send("unenemy all")
+			end
+    	ra.target_list = table.deepcopy(ra_list[tostring(name)])											--uses deepcopy to not link the tables 
+    	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Swapped to preset: &lt;cyan&gt;"..name)
+		else
+			cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;I don't know that list name.")
+	end
+	if ra.Settings.SetEnemy == "Yep" then 																					--checks if it should enemy the list
+		ra.autoEnemyList()
+	end	
+end
+
+
+--Show the stored presets with name to call them
+function ra.displaypresets()
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Preset target lists: &lt;lemon_chiffon&gt;zLOAD &lt;SlateGrey&gt;(Only people around) &lt;lemon_chiffon&gt; zSET&lt;SlateGrey&gt; (Copy of list)")	
+		for k, v in pairs (ra_list) do
+			cecho("\n&lt;grey&gt;[&lt;cyan&gt;"..k.. "&lt;grey&gt;]- &lt;light_blue&gt; "..table.concat(v, ", "))
+		end
+end
+
+--Delete a preset by setting its name (key) to nil and then saves the ra_list table to complete deletion
+function ra.deletepreset(name)
+	local name = name:title()
+	if ra_list == "" then
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;yellow&gt;There's nothing to delete. Did you load your presets?")
+	elseif table.contains(ra_list, name) then
+		ra_list[tostring(name)] = nil
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Successfully deleted preset: &lt;cyan&gt;"..name)
+		table.save(getMudletHomeDir().."/RaidAssistPresets.lua", ra_list)
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Couldn't find that preset to delete")
+	end
+end
+
+--Load past configuration settings
+function ra.loadSettings()
+	if io.exists(getMudletHomeDir().."/RaidAssistSettings.lua") then 							--Check there is a file to load
+  	table.load(getMudletHomeDir().."/RaidAssistSettings.lua", ra.Settings)			--Attempts to load table into ra.Settings
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;light_blue&gt;Loaded Raid Assist configurations..")
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;light_blue&gt;No saved settings found. First time starting up?")
+	end
+  sendGMCP([[Core.Supports.Add ["Comm.Channel 1"] ]]) --This ensures GMCP text module loads 
+	target = target or "none" 				--This target variable establishment here is to ensure the system has this if someone isn't using target. They should be but just incase. Should overwrite or screw it up.
+	
+	if ra.Settings.OverRide == true then --this checkes the setting to override after loading and switches the default false to true
+		ra.IsLeader = true
+	end
+
+end
+
+--Saves current RA settings for next session- attempts to reduce need to constantly set everything again
+function ra.saveSettings()
+	table.save(getMudletHomeDir().."/RaidAssistSettings.lua", ra.Settings)
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;light_blue&gt;Settings saved for next time!")
+end
+
+registerAnonymousEventHandler("sysExitEvent", "ra.saveSettings")	--Should save on closing
+registerAnonymousEventHandler("sysLoadEvent", "ra.loadSettings")	--Load settings with startup
+registerAnonymousEventHandler("sysLoadEvent", "ra.load")					--Load presets on startup
+
+
+
+</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Raid assist functions</name>
+				<packageName></packageName>
+				<script>--Handle single auto enemy
+function ra.autoEnemy(name)
+	local name = name
+	if ra.Settings.SetEnemy == "Yep" then
+		send("Enemy "..name,false)
+		enableTrigger("Full enemy list")
+		tempTimer(2, [[disableTrigger("Full enemy list")]])
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Make sure to enemy " ..name)
+		ra.ListEnemied = "Nope"
+	end
+end
+
+--Handle single unenemy
+function ra.autoUnenemy(name)
+	local name = name
+	if ra.Settings.SetEnemy == "Yep" then
+		send("Unenemy "..name,false)
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Make sure to unenemy " ..name)
+	end
+end
+
+--List enemy- this function enemies those on the target list, starts a trigger to detect maxing out enemy list as well
+function ra.autoEnemyList()
+  for _,v in pairs (ra.target_list) do
+  	send("Enemy "..v,false)
+		enableTrigger("Full enemy list")
+		ra.ListEnemied = "Yep"
+		tempTimer(4, [[disableTrigger("Full enemy list")]])
+  end
+end
+
+
+--Used to call out the target change or call out the target list
+function ra.announcer(type)
+	if ra.IsLeader then
+			if type == "Single" then
+      		send(string.format("pt Target: %s", target),false)--Change these if your city/group uses a different syntax
+			elseif type == "full" then
+					send(string.format("pt Target order is: %s", table.concat(ra.target_list, ", ")),false)
+    	end
+	end
+end
+
+
+function ra.TargetLeftCheck()
+	if not table.contains(ra.InRoom, target) then
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;black:OrangeRed&gt;===================Target likely left!===================")
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;black:OrangeRed&gt;===================Target likely left!===================")
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;black:OrangeRed&gt;===================Target likely left!===================")
+    send("pt "..target.." left!")
+	end
+end
+
+
+
+</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Room targeting</name>
+				<packageName></packageName>
+				<script>--Full credit to Pyori for this Room capturing code in the Player Targeting scripts- Would have taken me forever to figure out how to do this
+function ra.RoomPeople(event)
+	if event == "gmcp.Room.Players" then
+		
+		--Reset people in room, then parse the gmcp list to add people who aren't you.
+		ra.InRoom = {}
+		local me = gmcp.Char.Status.name:title() 		--establish your name to not add yourself
+		for _, tab in pairs(gmcp.Room.Players) do 	--This for loop puts all the names in the table ra.InRoom
+			if tab.name ~= me then
+				table.insert(ra.InRoom, tab.name)
+			end
+		end
+		
+	elseif event == "gmcp.Room.AddPlayer" then		--If someone entered the room, just add them	
+	
+		--Grab the player from gmcp.
+		local person = gmcp.Room.AddPlayer
+		--If the person isn't already in the list, then add them.
+		if not table.contains(ra.InRoom, person.name) then
+			table.insert(ra.InRoom, person.name)
+		end
+	elseif event == "gmcp.Room.RemovePlayer" then
+		local person = gmcp.Room.RemovePlayer
+		table.remove(ra.InRoom, table.index_of(ra.InRoom, person))
+	end
+end
+
+registerAnonymousEventHandler("gmcp.Room.Players", "ra.RoomPeople")					--This makes the above function run when Room.Player data comes in
+registerAnonymousEventHandler("gmcp.Room.RemovePlayer", "ra.RoomPeople")		--This runs above function when someone leaves
+registerAnonymousEventHandler("gmcp.Room.AddPlayer", "ra.RoomPeople")				--This runa above function when someone enters (not perfect)-Doesn't capture followers?
+
+
+--This function attempts to compare who is in the room with who is on the target list in order of target list- also cross checks and skips people on SoulList (recent dead)
+function ra.RoomTarget()
+	for n, v in pairs (ra.target_list) do
+    	if table.contains(ra.InRoom, v) and not table.contains(ra.SoulList, v) then
+    		target = v
+    		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Found and targeted  &lt;IndianRed&gt;"..target.."!")
+				cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Found and targeted  &lt;IndianRed&gt;"..target.."!")
+				cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Found and targeted  &lt;IndianRed&gt;"..target.."!")
+				raiseEvent("RA Target Changed")	
+				ra.announcer("Single")
+    		break
+    	elseif n == #ra.target_list then
+    		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;--&gt;Set your own!!")
+    		break
+    	end
+  end
+end
+
+
+
+
+</script>
+				<eventHandlerList />
+			</Script>
+			<Script isActive="yes" isFolder="no">
+				<name>Room gag</name>
+				<packageName></packageName>
+				<script>--This function is used to find the line for where a room description starts 
+--Good for either gagging a room description or setting up a gated trigger to read through a room description to pick things up (eg. If people are souls, directions of things)
+
+function RoomTitle()
+	local RoomName = gmcp.Room.Info.name
+	local Line = getCurrentLine()
+	Line = string.gsub(Line, "%." , "")
+	
+	
+	if tostring(Line) == tostring(RoomName) then
+		return true
+		
+		else
+		return false
+	end
+end
+</script>
+				<eventHandlerList />
+			</Script>
+			<ScriptGroup isActive="yes" isFolder="yes">
+				<name>Useful code snippets</name>
+				<packageName></packageName>
+				<script>--[[
+-- I recomment adding this to your targeting alias with the following if statement
+
+if ndb.getcity(target) ~= "Hashan" then
+	ra.TargetAdd(target)
+end
+
+
+--Can make it this if you don't want it to add while hunting since their's no lead set
+if ra.Leader ~= "" or ra.Leader ~= "none" then
+	ra.TargetAdd(target)
+end
+
+
+
+-- Note: This must be after you set target variable or you won't pass an updated target.. or then it should be this ra.TargetAdd(matches[2])
+
+
+You can also make both checks happen like this
+
+
+if ra.Leader ~= "" or ra.Leader ~= "none" then
+	if ndb.getcity(target) ~= "Cyrene" then
+		ra.TargetAdd(target)
+	end
+end
+
+--or here it is with some toggle you have on an alias
+--For example, in your target alias
+
+if add_target then
+	ra.TargetAdd(target)
+end
+
+--Separate alias 
+pattern- I hate coming up with these so pick something easy
+
+Code--&gt;
+add_target = add_target or false
+if add_target == false then
+		add_target = true
+		cecho("\n&lt;lemon_chiffon&gt;-Adding targets to order!")
+	else
+		add_target = false
+		cecho("\n&lt;IndianRed&gt;-Not adding targets to order!")
+end
+
+
+
+--Also, add this to your target alias, this is for announcing a target change on pt when you perform it with your target alias
+and it will only announce when you are either the group leader or calling target changes anyways
+
+ra.announcer("Single")
+
+
+--]]
+
+
+
+
+</script>
+				<eventHandlerList />
+			</ScriptGroup>
+		</ScriptGroup>
+	</ScriptPackage>
+</MudletPackage>
