@@ -1246,27 +1246,27 @@ if matches[2] == ra.Leader or matches[2] == ra.Caller or matches[2] == ra.Caller
           ra.ToTarget = matches[3] 
           target = matches[3]
           send("settarget "..target, false)
-          --if you have "t <target>" as an alias, use this. Comment it out.
+          --if you have "t 'target'" as an alias, use this. Comment it out.
           expandAlias("t "..target)
           -- this will echo your target switch in party is 'zLoud' is active
           if ra.Settings.OverRide == true then
             send("pt Target: "..target)
           end
-          cecho("\n<OrangeRed>(CombatAtul):<black:white>===================Target switched: "..target:upper().."===================")
-          cecho("\n<OrangeRed>(CombatAtul):<black:white>===================Target switched: "..target:upper().."===================")
+          cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white&gt;===================Target switched: "..target:upper().."===================")
+          cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white&gt;===================Target switched: "..target:upper().."===================")
           raiseEvent("RA Target Changed")
         else
-  	      cecho("\n<OrangeRed>(CombatAtul): <SpringGreen>No enemies from target order found! <cyan>-->Set your own!!")
-          cecho("\n<OrangeRed>(CombatAtul): <SpringGreen>No enemies from target order found! <cyan>-->Set your own!!")
+  	      cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;-->Set your own!!")
+          cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;-->Set your own!!")
       end
       --if you want to execute the switch- tells you target was switched and stores it in ToTarget for swap
     elseif ra.Settings.TargetSwitch == "manual" then
         ra.ToTarget = matches[3]
-        cecho("\n<OrangeRed>(CombatAtul):<black:white>===================Party Target is: "..ra.ToTarget:upper().."===================")
-        cecho("\n<OrangeRed>(CombatAtul):<black:white>===================Party Target is: "..ra.ToTarget:upper().."===================")
+        cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white>===================Party Target is: "..ra.ToTarget:upper().."===================")
+        cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white>===================Party Target is: "..ra.ToTarget:upper().."===================")
     else
-	      cecho("\n<OrangeRed>(CombatAtul): <SpringGreen>No enemies from target order found! <cyan>-->Set your own!!")
-        cecho("\n<OrangeRed>(CombatAtul): <SpringGreen>No enemies from target order found! <cyan>-->Set your own!!")
+	      cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen>No enemies from target order found! &lt;cyan&gt;-->Set your own!!")
+        cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen>No enemies from target order found! &lt;cyan&gt;-->Set your own!!")
     end
   end
 end
