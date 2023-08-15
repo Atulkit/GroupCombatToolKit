@@ -53,6 +53,9 @@ end
 				<packageName></packageName>
 				<script>--Note: Some features are AK dependent.
 
+-- All changes and updates will be through GitHub now.
+-- https://github.com/Atulkit/GroupCombatToolKit 
+
 --[[
 Versions:
 0.9- Initial testing begins
@@ -151,6 +154,9 @@ Added Party Gag trigger to gag party messages (DISABLE THIS IF YOU DO NOT PUSH M
 [Trigger] Party Calls - Adds lines for a few more variations on afflictions called to party.
 [Alias] Reset target and callers - Now resets target list, target, leader, and target callers to default settings.
 [Script] Target list order - Added Legacy NDB functionality to show classes in target order.
+
+1.9 Moved to Github. Changes will be tracked there.
+
 --]]
 </script>
 				<eventHandlerList />
