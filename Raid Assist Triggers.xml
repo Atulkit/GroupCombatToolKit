@@ -1241,61 +1241,36 @@ if matches[2] == ra.Leader or matches[2] == ra.Caller or matches[2] == ra.Caller
     and gmcp.Comm.Channel.Text.channel == "party" then
     --if auto switching to target called, will switch and inform
     if ra.Settings.TargetSwitch == "auto" then
-      ra.ToTarget = matches[3]
+       ra.ToTarget = matches[3]
         if table.contains(ra.InRoom, matches[3]) then
-          --ra.ToTarget = matches[3] 
+          ra.ToTarget = matches[3] 
           target = matches[3]
-          --send("settarget "..target, false)
+          send("settarget "..target, false)
+          --if you have "t <target>" as an alias, use this. Comment it out.
           expandAlias("t "..target)
-          --send("pt Target: "..target)
-          cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white&gt;===================Target switched: "..target:upper().."===================")
-          cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white&gt;===================Target switched: "..target:upper().."===================")
+          -- this will echo your target switch in party is 'zLoud' is active
+          if ra.Settings.OverRide == true then
+            send("pt Target: "..target)
+          end
+          cecho("\n<OrangeRed>(CombatAtul):<black:white>===================Target switched: "..target:upper().."===================")
+          cecho("\n<OrangeRed>(CombatAtul):<black:white>===================Target switched: "..target:upper().."===================")
           raiseEvent("RA Target Changed")
         else
-  	      cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;--&gt;Set your own!!")
-          cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;--&gt;Set your own!!")
+  	      cecho("\n<OrangeRed>(CombatAtul): <SpringGreen>No enemies from target order found! <cyan>-->Set your own!!")
+          cecho("\n<OrangeRed>(CombatAtul): <SpringGreen>No enemies from target order found! <cyan>-->Set your own!!")
       end
       --if you want to execute the switch- tells you target was switched and stores it in ToTarget for swap
     elseif ra.Settings.TargetSwitch == "manual" then
         ra.ToTarget = matches[3]
-        --target = matches[3]
-        --send("settarget "..target, false)
-        --expandAlias("t "..target)
-        --send("pt Target: "..target)
-        cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white&gt;===================Party Target is: "..ra.ToTarget:upper().."===================")
-        cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white&gt;===================Party Target is: "..ra.ToTarget:upper().."===================")
+        cecho("\n<OrangeRed>(CombatAtul):<black:white>===================Party Target is: "..ra.ToTarget:upper().."===================")
+        cecho("\n<OrangeRed>(CombatAtul):<black:white>===================Party Target is: "..ra.ToTarget:upper().."===================")
     else
-	      cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;--&gt;Set your own!!")
-        cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;--&gt;Set your own!!")
+	      cecho("\n<OrangeRed>(CombatAtul): <SpringGreen>No enemies from target order found! <cyan>-->Set your own!!")
+        cecho("\n<OrangeRed>(CombatAtul): <SpringGreen>No enemies from target order found! <cyan>-->Set your own!!")
     end
   end
 end
 
-
-
---Previous version
---[[
---Reflex to take the target that the leader has called
---checks if the person yelling the target is the set leader
-if matches[2] == ra.Leader then
-	--if auto switching to target calles, will switch and inform
-	if ra.Settings.TargetSwitch == "auto" then
-		ra.ToTarget = matches[3]
-		target = matches[3]
-		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;black:white&gt;===================Target switched: "..target:upper().."===================")
-		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;black:white&gt;===================Target switched: "..target:upper().."===================")
-		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;black:white&gt;===================Target switched: "..target:upper().."===================")
-		raiseEvent("RA Target Changed")
-	
-	--if you want to exicute the swtich- tells you target was switched and stores it in ToTarget for swap
-	elseif ra.Settings.TargetSwitch == "manual" then
-		ra.ToTarget = matches[3]
-		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;black:white&gt;===================Party Target is: "..ra.ToTarget:upper().."===================")
-		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;black:white&gt;===================Party Target is: "..ra.ToTarget:upper().."===================")
-		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;black:white&gt;===================Party Target is: "..ra.ToTarget:upper().."===================")
-	end
-end
---]]
 
 </script>
 				<triggerType>0</triggerType>
