@@ -242,22 +242,18 @@ raiseEvent("RA Target Changed")</script>
 				<script>--Set the leader calling the target list and calling target changes
 
 
--- if targetassist then
-    -- targetassist.groupLeader = matches[2]:lower():title()
-    -- cecho("\n&lt;red&gt;Group leader changed to: &lt;yellow&gt;".. targetassist.groupLeader)
+-- if ra.Leader == "Me" or ra.Leader == "Atul" then
+	-- ra.IsLeader = true
+-- else
+	-- ra.IsLeader = false
+-- end
+-- else
 
-
-	-- if ra.Leader == "Me" or ra.Leader == "Atul" then
-    -- ra.IsLeader = true
-		-- else
-		-- ra.IsLeader = false
-	-- end
-	-- else
 ra.Leader = matches[2]:title()
 cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;red&gt; Group leader changed to: &lt;yellow&gt;".. ra.Leader)
 if matches[2]:title() == "Me" then
-  ra.IsLeader = true
-	else
+  	ra.IsLeader = true
+else
 	ra.IsLeader = false
 end
 --end
@@ -458,11 +454,7 @@ end
 				<script>cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Raid assist", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Raid assist", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
 cecho("&lt;snow&gt;-'zON/zOFF'")
 
--- if targetassist then
-		-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Raid leader:   &lt;cyan&gt;"..targetassist.groupLeader.." &lt;snow&gt;-'gL'")
-	-- else
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader.." &lt;snow&gt;-'zL'") 
---end
 if ra.Caller ~= "" then
 --cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller.."&lt;snow&gt;- ztc 'person'")
 end
@@ -481,11 +473,8 @@ cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Moved report:  &lt;MistyRose&gt;" .. t
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Aff reporting: &lt;MistyRose&gt;" .. tostring(ra.Settings.AffCalling):title().." &lt;snow&gt;-'zREPORT'")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;City target:   &lt;MistyRose&gt;" .. ra.Settings.CityTargeting.." &lt;snow&gt;- 'zCITY name' or letter")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" ..ra.Settings.TargetSwitch.." &lt;snow&gt;-'zT to target', 'zP to toggle setting'")
--- if targetassist then
-		-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;TA-" .. svo.conf.targetassist.." &lt;snow&gt;-'nT'")
-	-- else
-		-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" ..ra.Settings.TargetSwitch.." &lt;snow&gt;-'zT to target', 'zP to toggle setting'")
--- end
+
+
 </script>
 				<command></command>
 				<packageName></packageName>
@@ -495,16 +484,13 @@ cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" ..ra
 				<name>Status report short version</name>
 				<script>cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Raid assist", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Raid assist", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
 
--- if targetassist then
-		-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Raid leader:   &lt;cyan&gt;"..targetassist.groupLeader)
-	-- else
+
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader)
---end
 if ra.Caller ~= "" then
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller)
+--cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller)
 end
 if ra.Caller2 ~= "" then
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2)
+--cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2)
 end
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", "))
@@ -517,13 +503,7 @@ cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Aff reporting: &lt;MistyRose&gt;" .. t
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;City target:   &lt;MistyRose&gt;" .. ra.Settings.CityTargeting)
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" .. ra.Settings.TargetSwitch)
 
--- if targetassist then
-		-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;TA-" .. svo.conf.targetassist)
-	-- else
-		-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" .. ra.Settings.TargetSwitch)
--- end
 
- 
 
 </script>
 				<command></command>
