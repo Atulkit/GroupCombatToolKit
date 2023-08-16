@@ -25,10 +25,10 @@ These steps are the quick way to set up the system to follow party target calls.
 7.  Optional: `zREPORT` - Will report targets movement and call afflictions you give.
 8.  Optional: `zLOUD` - Will echo your target switches to the party if not leading or a designated caller.
 
-`zR` - Switches to first target in the list that is in the room
-`zN` - Switch to next target in list
-`zF` - Switch to first target in order
-`zT` - Switch to last party target called (by leader or callers)
+- `zR` - Switches to first target in the list that is in the room
+- `zN` - Switch to next target in list
+- `zF` - Switch to first target in order
+- `zT` - Switch to last party target called (by leader or callers)
 
 # To Lead
 
