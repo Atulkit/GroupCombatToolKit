@@ -45,37 +45,37 @@ To set up the system to lead. Follow the above steps, plus:
 
 List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` will give the full and up to date list in game.
 
-`zON/OFF` - Raid system all on or off
-`zSTAT` - Raid system info
-`zL <name or 'Me'>` - Set leader
-`zORDER` - List target order for reordering
-`zCALL(F)` - Call target order, F forces announce
-`zC(F)` - Call current target, F forces announce
-`zTC <name> <name, if needed>` - Option to set specific target callers (1 or 2) in addition to leader
-`zGROUP` - Report leaders, target, target list, callers, and more to party
-`zADD <name (#)>` - Add enemy to list at end or into a spot
-`zMULTI <name>, <name>, <name>, etc` - Add several enemies at once
-`zREMOVE <name>` - Remove enemy from list
-`zSWAP <name> <#>` - Manual reordering person to a position
-`zENEMY` - Enemies the target list
-`zAUTO` - Enable setting enemies automatically
-`zA` - Turn on target switching if your target dies!
-`zN,zF,z#` - Next, First, Position target
-`zT <partial name>` - Target with only first few letters
-`zP,zPAUTO/MANUAL` - Setting for party leader target switching
-`zT` - Manual target last leader target call
-`zR` - Check the room for the highest ordered target and target them
-`zLOUD` - Make yourself call as if you were leader but not set to lead
-`zBW <city letter>` - Add complete city to target order
-`zAR (h|m|t|a|c|e|r|all)` - Adds new people in room from that city to list
-`zRESET` - Empty target list
-`zREPORT` - Toggle highlighting target leaving and affliction calling
-`zCITY` - Change default city to add room targets from
-`zLIST` - Display saved lists to use
-`zDELETE <name>` - Delete a preset
-`zSAVE <name>` - Save target order for future
-`zLOAD <name>` - Load only those in realms into order
-`zSET <name>` - Replicate saved target order
-`zSS` - Force save settings
-`zLS` - Force load settings
-`zRE` - Reset QL room gag without clearing target order
+-`zON/OFF` - Raid system all on or off
+-`zSTAT` - Raid system info
+-`zL <name or 'Me'>` - Set leader
+-`zORDER` - List target order for reordering
+-`zCALL(F)` - Call target order, F forces announce
+-`zC(F)` - Call current target, F forces announce
+-`zTC <name> <name, if needed>` - Option to set specific target callers (1 or 2) in addition to leader
+-`zGROUP` - Report leaders, target, target list, callers, and more to party
+-`zADD <name (#)>` - Add enemy to list at end or into a spot
+-`zMULTI <name>, <name>, <name>, etc` - Add several enemies at once
+-`zREMOVE <name>` - Remove enemy from list
+-`zSWAP <name> <#>` - Manual reordering person to a position
+-`zENEMY` - Enemies the target list
+-`zAUTO` - Enable setting enemies automatically
+-`zA` - Turn on target switching if your target dies!
+-`zN,zF,z#` - Next, First, Position target
+-`zT <partial name>` - Target with only first few letters
+-`zP,zPAUTO/MANUAL` - Setting for party leader target switching
+-`zT` - Manual target last leader target call
+-`zR` - Check the room for the highest ordered target and target them
+-`zLOUD` - Make yourself call as if you were leader but not set to lead
+-`zBW <city letter>` - Add complete city to target order
+-`zAR (h|m|t|a|c|e|r|all)` - Adds new people in room from that city to list
+-`zRESET` - Empty target list
+-`zREPORT` - Toggle highlighting target leaving and affliction calling
+-`zCITY` - Change default city to add room targets from
+-`zLIST` - Display saved lists to use
+-`zDELETE <name>` - Delete a preset
+-`zSAVE <name>` - Save target order for future
+-`zLOAD <name>` - Load only those in realms into order
+-`zSET <name>` - Replicate saved target order
+-`zSS` - Force save settings
+-`zLS` - Force load settings
+-`zRE` - Reset QL room gag without clearing target order
