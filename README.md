@@ -39,7 +39,8 @@ To set up the system to lead. Follow the above steps, plus:
 3. `zCITY <city name of first letter>` - Sets primary target city.
 4. `zADD <enemy> / zMULTI <enemy> <enemy> <enemy>` - Adds enemy/enemies to target list.
 5. `zORDER` - Show target list and set target order.
-6. `zGROUP` - Reports information from `zSTAT` to party.
+6. `zF` - Set and call first target to party.
+7. `zGROUP` - Reports information from `zSTAT` to party.
 
 ## Aliases
 
