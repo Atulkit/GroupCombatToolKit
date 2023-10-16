@@ -21,9 +21,8 @@ These steps are the quick way to set up the system to follow party target calls.
 3. `zA` - Toggle on 'auto' target switching.
 4. `zSTAT` - Shows the the system status and what is toggled on/off.
 5.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
-6.  Optional: `zTC <player> <player2>` - Designate up to two other players who will call targets that you will follow.
-7.  Optional: `zREPORT` - Will report targets movement and call afflictions you give.
-8.  Optional: `zLOUD` - Will echo your target switches to the party if not leading or a designated caller.
+6.  Optional: `zREPORT` - Will report targets movement and call afflictions you give.
+7.  Optional: `zLOUD` - Will echo your target switches to the party if not leading or a designated caller.
 
 - `zR` - Switches to first target in the list that is in the room
 - `zN` - Switch to next target in list
@@ -52,7 +51,6 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zORDER` - List target order for reordering
 - `zCALL(F)` - Call target order, F forces announce
 - `zC(F)` - Call current target, F forces announce
-- `zTC <name> <name, if needed>` - Option to set specific target callers (1 or 2) in addition to leader
 - `zGROUP` - Report leaders, target, target list, callers, and more to party
 - `zADD <name (#)>` - Add enemy to list at end or into a spot
 - `zMULTI <name>, <name>, <name>, etc` - Add several enemies at once

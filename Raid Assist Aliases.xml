@@ -267,8 +267,8 @@ end
 			<Alias isActive="no" isFolder="no">
 				<name>Target callers</name>
 				<script>--set this only if the leader(s) are not the primary target callers
-					-- Specific target callers commented out. target switch is in room depedent now
-					-- KEEP THIS DISABLED
+-- Specific target callers commented out. target switch is in room depedent now
+-- KEEP THIS DISABLED
 local person = matches[2]:title()
 if matches[3] then
   person2 = matches[3]:title()
@@ -459,10 +459,10 @@ cecho("&lt;snow&gt;-'zON/zOFF'")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader.." &lt;snow&gt;-'zL'") 
 -- Specific target callers commented out. target switch is in room depedent now
 <!-- if ra.Caller ~= "" then
---cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller.."&lt;snow&gt;- ztc 'person'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller.."&lt;snow&gt;- ztc 'person'")
 end
 if ra.Caller2 ~= "" then
---cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2.."&lt;snow&gt;-ztc 'person' 'person2'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2.."&lt;snow&gt;-ztc 'person' 'person2'")
 end -->
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", ").." &lt;snow&gt;- zEnemy")
@@ -491,10 +491,10 @@ cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" ..ra
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader)
 -- Specific target callers commented out. target switch is in room depedent now
 <!-- if ra.Caller ~= "" then
---cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller)
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller)
 end
 if ra.Caller2 ~= "" then
---cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2)
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2)
 end -->
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", "))
