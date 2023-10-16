@@ -21,7 +21,6 @@ These steps are the quick way to set up the system to follow party target calls.
 3. `zA` - Toggle on 'auto' target switching.
 4. `zSTAT` - Shows the the system status and what is toggled on/off.
 5.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
-6.  Optional: `zTC <player> <player2>` - Designate up to two other players who will call targets that you will follow.
 7.  Optional: `zREPORT` - Will report targets movement and call afflictions you give.
 8.  Optional: `zLOUD` - Will echo your target switches to the party if not leading or a designated caller.
 
