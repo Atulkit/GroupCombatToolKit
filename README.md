@@ -52,7 +52,6 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zORDER` - List target order for reordering
 - `zCALL(F)` - Call target order, F forces announce
 - `zC(F)` - Call current target, F forces announce
-- `zTC <name> <name, if needed>` - Option to set specific target callers (1 or 2) in addition to leader
 - `zGROUP` - Report leaders, target, target list, callers, and more to party
 - `zADD <name (#)>` - Add enemy to list at end or into a spot
 - `zMULTI <name>, <name>, <name>, etc` - Add several enemies at once
