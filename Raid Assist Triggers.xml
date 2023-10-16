@@ -2487,7 +2487,10 @@ end</script>
 							<integer>1</integer>
 						</regexCodePropertyList>
 					</Trigger>
-							<TriggerGroup isActive="yes" isFolder="yes" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+				</TriggerGroup>
+			</TriggerGroup>
+		</TriggerGroup>
+									<TriggerGroup isActive="yes" isFolder="yes" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 			<name>Walls</name>
 			<script></script>
 			<triggerType>0</triggerType>
@@ -2895,9 +2898,6 @@ cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;DarkGoldenRod&gt; A WALL DETONAT
 						<integer>1</integer>
 					</regexCodePropertyList>
 				</Trigger>
-			</TriggerGroup>
-		</TriggerGroup>
-				</TriggerGroup>
 			</TriggerGroup>
 		</TriggerGroup>
 	</TriggerPackage>
