@@ -135,9 +135,8 @@ if target == ra.slain and ra.Settings.SetTarget then																	--Check if 
 		end
 		cecho("\n\n\n&lt;OrangeRed&gt;(CombAtul): &lt;LightSalmon&gt;=====================&lt;black:green&gt;====&lt;black:OrangeRed&gt;==Target DIED!!!Target DIED!!!==&lt;black:green&gt;====&lt;LightSalmon:black&gt;=====================")
     cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;LightSalmon&gt;=====================&lt;black:green&gt;====&lt;black:OrangeRed&gt;==Target DIED!!!Target DIED!!!==&lt;black:green&gt;====&lt;LightSalmon:black&gt;=====================")
-    cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;LightSalmon&gt;=====================&lt;black:green&gt;====&lt;black:OrangeRed&gt;==Target DIED!!!Target DIED!!!==&lt;black:green&gt;====&lt;LightSalmon:black&gt;=====================")
-		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;LightSalmon&gt;=====================&lt;black:green&gt;====&lt;black:OrangeRed&gt;==Target DIED!!!Target DIED!!!==&lt;black:green&gt;====&lt;LightSalmon:black&gt;=====================\n\n")
-			
+    cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;LightSalmon&gt;=====================&lt;black:green&gt;====&lt;black:OrangeRed&gt;==Target DIED!!!Target DIED!!!==&lt;black:green&gt;====&lt;LightSalmon:black&gt;=====================\n\n")
+
 		tempTimer(0.7, [[ra.Burstcheck(tostring(ra.slain))]])																		--The half second delay on calling the target switch function is to ensure capturing of burst
 		
 		
@@ -1235,18 +1234,20 @@ if matches[3] == target then return end
 
 --Reflex to take the target that the leader or caller has announced
 --checks if the person yelling the target is the set leader or caller
-if matches[2] == ra.Leader or matches[2] == ra.Caller or matches[2] == ra.Caller2  then
+--if matches[2] == ra.Leader or matches[2] == ra.Caller or matches[2] == ra.Caller2  then
   if matches[2] == gmcp.Comm.Channel.Text.talker 
     and string.find(gmcp.Comm.Channel.Text.text, " "..matches[2]..".") 
     and gmcp.Comm.Channel.Text.channel == "party" then
     --if auto switching to target called, will switch and inform
     if ra.Settings.TargetSwitch == "auto" then
-       ra.ToTarget = matches[3]
+       --ra.ToTarget = matches[3]
         if table.contains(ra.InRoom, matches[3]) then
+        	--set RA target variable
           ra.ToTarget = matches[3] 
           target = matches[3]
+          --sets serversive target. comment out if not needed
           send("settarget "..target, false)
-          --if you have "t 'target'" as an alias, use this. Comment it out.
+          --if you have "t 'target'" as an alias, use this. Comment it out or replace with your own targeting alias
           expandAlias("t "..target)
           -- this will echo your target switch in party is 'zLoud' is active
           if ra.Settings.OverRide == true then
@@ -1268,7 +1269,7 @@ if matches[2] == ra.Leader or matches[2] == ra.Caller or matches[2] == ra.Caller
 	      cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen>No enemies from target order found! &lt;cyan&gt;-->Set your own!!")
         cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen>No enemies from target order found! &lt;cyan&gt;-->Set your own!!")
     end
-  end
+  --end
 end
 
 
@@ -1330,13 +1331,13 @@ deleteFull()</script>
 				<regexCodePropertyList />
 				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 					<name>Prompt report</name>
-					<script>-- remove this shit later TODO:
+					<script>-- needs updating but works for now
 if ra.Settings.AffCalling and ra.aff_gate and ra.affs_to_report[1] then
   send("pt "..target.." afflicted with "..table.concat(ra.affs_to_report, " "))
 end
 ra.aff_gate = false
 ra.affs_to_report = {}
--- end remove</script>
+-- revisit this!</script>
 					<triggerType>0</triggerType>
 					<conditonLineDelta>0</conditonLineDelta>
 					<mStayOpen>0</mStayOpen>
@@ -1424,7 +1425,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"Afflicting (\w+) with: (\w+)\.\"$</string>
+							<string>^\(Party\): (\w+) says, \"Afflicting (\w+) with: (\w+)\.\"$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1449,7 +1450,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"Afflicting (\w+) with: (\w+)\.\"$</string>
+							<string>^\(Party\): (\w+) says, \"Afflicting (\w+) with: (\w+)\.\"$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1515,9 +1516,9 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 3</name>
-						<script>if matches[2] == target then
-  local aff = string.lower(matches[3])
-  local aff1 = string.lower(matches[4])
+						<script>if matches[3] == target then
+  local aff = string.lower(matches[4])
+  local aff1 = string.lower(matches[5])
   affstrack.score[aff] = 100
   --affstrack.score[affstrack.venoms[aff]] = 100
   affstrack.score[aff1] = 100
@@ -1536,7 +1537,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+)\: (\w+) (\w+)\.\"$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+)\: (\w+) (\w+)\.\"$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1544,9 +1545,9 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 3 v</name>
-						<script>if matches[2] == target then
-  local aff = string.lower(matches[3])
-  local aff1 = string.lower(matches[4])
+						<script>if matches[3] == target then
+  local aff = string.lower(matches[4])
+  local aff1 = string.lower(matches[5])
   --affstrack.score[aff] = 100
   affstrack.score[affstrack.venoms[aff]] = 100
   --affstrack.score[aff1] = 100
@@ -1565,7 +1566,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+)\: (\w+) (\w+)\.\"$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+)\: (\w+) (\w+)\.\"$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1573,10 +1574,10 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 4</name>
-						<script>if matches[2] == target then
-  local aff = string.lower(matches[3])
-  local aff1 = string.lower(matches[4])
-  local aff2 = string.lower(matches[5])
+						<script>if matches[3] == target then
+  local aff = string.lower(matches[4])
+  local aff1 = string.lower(matches[5])
+  local aff2 = string.lower(matches[6])
   affstrack.score[aff] = 100
   --affstrack.score[affstrack.venoms[aff]] = 100
   affstrack.score[aff1] = 100
@@ -1598,7 +1599,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+): (\w+) (\w+) (\w+)\.\"$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+): (\w+) (\w+) (\w+)\.\"$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1606,10 +1607,10 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 4 v</name>
-						<script>if matches[2] == target then
-  local aff = string.lower(matches[3])
-  local aff1 = string.lower(matches[4])
-  local aff2 = string.lower(matches[5])
+						<script>if matches[3] == target then
+  local aff = string.lower(matches[4])
+  local aff1 = string.lower(matches[5])
+  local aff2 = string.lower(matches[6])
   --affstrack.score[aff] = 100
   affstrack.score[affstrack.venoms[aff]] = 100
   --affstrack.score[aff1] = 100
@@ -1631,7 +1632,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+): (\w+) (\w+) (\w+)\.\"$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+): (\w+) (\w+) (\w+)\.\"$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1639,8 +1640,8 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 5</name>
-						<script>if matches[2] == target then
-  local aff = string.lower(matches[3])
+						<script>if matches[3] == target then
+  local aff = string.lower(matches[4])
   affstrack.score[aff] = 100
   --affstrack.score[affstrack.venoms[aff]] = 100
   OppGainedAff(aff)
@@ -1656,7 +1657,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+): (\w+)\.\"$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+): (\w+)\.\"$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1664,8 +1665,8 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 5 v</name>
-						<script>if matches[2] == target then
-  local aff = string.lower(matches[3])
+						<script>if matches[3] == target then
+  local aff = string.lower(matches[4])
   --affstrack.score[aff] = 100
   affstrack.score[affstrack.venoms[aff]] = 100
   OppGainedAff(aff)
@@ -1681,7 +1682,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+): (\w+)\.\"$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+): (\w+)\.\"$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1689,8 +1690,8 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 6</name>
-						<script>if matches[2] == target then
-  local aff = string.lower(matches[3])
+						<script>if matches[3] == target then
+  local aff = string.lower(matches[4])
   affstrack.score[aff] = 100
   --affstrack.score[affstrack.venoms[aff]] = 100
   OppGainedAff(aff)
@@ -1706,7 +1707,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+) hit with (\w+)\."$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+) hit with (\w+)\."$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1714,8 +1715,8 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 6 v</name>
-						<script>if matches[2] == target then
-  local aff = string.lower(matches[3])
+						<script>if matches[3] == target then
+  local aff = string.lower(matches[4])
 --  affstrack.score[aff] = 100
   affstrack.score[affstrack.venoms[aff]] = 100
   OppGainedAff(aff)
@@ -1731,7 +1732,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+) hit with (\w+)\."$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+) hit with (\w+)\."$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1739,12 +1740,12 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 7</name>
-						<script>if matches[2] == target then
-  local aff1 = string.lower(matches[3])
+						<script>if matches[3] == target then
+  local aff1 = string.lower(matches[4])
   affstrack.score[aff1] = 100
   --affstrack.score[affstrack.venoms[aff1]] = 100
   OppGainedAff(aff1)
-  local aff2 = string.lower(matches[4])
+  local aff2 = string.lower(matches[5])
   affstrack.score[aff2] = 100
   --affstrack.score[affstrack.venoms[aff2]] = 100
   OppGainedAff(aff2)
@@ -1760,7 +1761,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+) hit with (\w+) (\w+)\."$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+) hit with (\w+) (\w+)\."$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1768,12 +1769,12 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 7 v</name>
-						<script>if matches[2] == target then
-  local aff1 = string.lower(matches[3])
+						<script>if matches[3] == target then
+  local aff1 = string.lower(matches[4])
   --affstrack.score[aff1] = 100
   affstrack.score[affstrack.venoms[aff1]] = 100
   OppGainedAff(aff1)
-  local aff2 = string.lower(matches[4])
+  local aff2 = string.lower(matches[5])
   --affstrack.score[aff2] = 100
   affstrack.score[affstrack.venoms[aff2]] = 100
   OppGainedAff(aff2)
@@ -1789,7 +1790,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+) hit with (\w+) and (\w+)\."$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+) hit with (\w+) and (\w+)\."$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1797,16 +1798,16 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>Call 8</name>
-						<script>if matches[2] == target then
-  local aff1 = string.lower(matches[3])
+						<script>if matches[3] == target then
+  local aff1 = string.lower(matches[4])
   affstrack.score[aff1] = 100
   --affstrack.score[affstrack.venoms[aff1]] = 100
   OppGainedAff(aff1)
-  local aff2 = string.lower(matches[4])
+  local aff2 = string.lower(matches[5])
   affstrack.score[aff2] = 100
   --affstrack.score[affstrack.venoms[aff2]] = 100
   OppGainedAff(aff2)
-  local aff2 = string.lower(matches[5])
+  local aff2 = string.lower(matches[6])
   affstrack.score[aff2] = 100
   --affstrack.score[affstrack.venoms[aff3]] = 100
   OppGainedAff(aff3)
@@ -1822,7 +1823,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+) hit with (\w+) and (\w+) and (\w+)\."$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+) hit with (\w+) and (\w+) and (\w+)\."$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1830,16 +1831,16 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>3 aff hit v</name>
-						<script>if matches[2] == target then
-  local aff1 = string.lower(matches[3])
+						<script>if matches[3] == target then
+  local aff1 = string.lower(matches[4])
   --affstrack.score[aff1] = 100
   affstrack.score[affstrack.venoms[aff1]] = 100
   OppGainedAff(aff1)
-  local aff2 = string.lower(matches[4])
+  local aff2 = string.lower(matches[5])
   --affstrack.score[aff2] = 100
   affstrack.score[affstrack.venoms[aff2]] = 100
   OppGainedAff(aff2)
-  local aff3 = string.lower(matches[5])
+  local aff3 = string.lower(matches[6])
   --affstrack.score[aff2] = 100
   affstrack.score[affstrack.venoms[aff3]] = 100
   OppGainedAff(aff3)
@@ -1855,7 +1856,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+) hit with (\w+) (\w+) (\w+)\."$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+) hit with (\w+) (\w+) (\w+)\."$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -1863,16 +1864,16 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>hit with 3 affs</name>
-						<script>if matches[2] == target then
-  local aff1 = string.lower(matches[3])
+						<script>if matches[3] == target then
+  local aff1 = string.lower(matches[4])
   affstrack.score[aff1] = 100
   --affstrack.score[affstrack.venoms[aff1]] = 100
   OppGainedAff(aff1)
-  local aff2 = string.lower(matches[4])
+  local aff2 = string.lower(matches[5])
   affstrack.score[aff2] = 100
   --affstrack.score[affstrack.venoms[aff2]] = 100
   OppGainedAff(aff2)
-  local aff3 = string.lower(matches[5])
+  local aff3 = string.lower(matches[6])
   affstrack.score[aff2] = 100
   --affstrack.score[affstrack.venoms[aff3]] = 100
   OppGainedAff(aff3)
@@ -1888,7 +1889,7 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+) hit with (\w+) (\w+) (\w+)\."$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+) hit with (\w+) (\w+) (\w+)\."$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
@@ -2151,12 +2152,12 @@ end</script>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
 						<name>hit with a few affs</name>
-						<script>if matches[2] == target then
-  local aff1 = string.lower(matches[3])
+						<script>if matches[3] == target then
+  local aff1 = string.lower(matches[4])
   affstrack.score[aff1] = 100
   --affstrack.score[affstrack.venoms[aff1]] = 100
   OppGainedAff(aff1)
-  local aff2 = string.lower(matches[4])
+  local aff2 = string.lower(matches[5])
   affstrack.score[aff2] = 100
   --affstrack.score[affstrack.venoms[aff2]] = 100
   OppGainedAff(aff2)
@@ -2172,20 +2173,20 @@ end</script>
 						<colorTriggerFgColor>#000000</colorTriggerFgColor>
 						<colorTriggerBgColor>#000000</colorTriggerBgColor>
 						<regexCodeList>
-							<string>^\(Party\): \w+ says, \"(\w+) hit with (\w+) and (\w+)\!"$</string>
+							<string>^\(Party\): (\w+) says, \"(\w+) hit with (\w+) and (\w+)\!"$</string>
 						</regexCodeList>
 						<regexCodePropertyList>
 							<integer>1</integer>
 						</regexCodePropertyList>
 					</Trigger>
 					<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
-						<name>hit with 2 affs</name>
-						<script>if matches[2] == target then
-  local aff1 = string.lower(matches[3])
+						<name>hit with 2 affs v</name>
+						<script>if matches[3] == target then
+  local aff1 = string.lower(matches[4])
   --affstrack.score[aff1] = 100
   affstrack.score[affstrack.venoms[aff1]] = 100
   OppGainedAff(aff1)
-  local aff2 = string.lower(matches[4])
+  local aff2 = string.lower(matches[5])
   --affstrack.score[aff2] = 100
   affstrack.score[affstrack.venoms[aff2]] = 100
   OppGainedAff(aff2)
@@ -2486,6 +2487,415 @@ end</script>
 							<integer>1</integer>
 						</regexCodePropertyList>
 					</Trigger>
+							<TriggerGroup isActive="yes" isFolder="yes" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+			<name>Walls</name>
+			<script></script>
+			<triggerType>0</triggerType>
+			<conditonLineDelta>0</conditonLineDelta>
+			<mStayOpen>0</mStayOpen>
+			<mCommand></mCommand>
+			<packageName></packageName>
+			<mFgColor>#ff0000</mFgColor>
+			<mBgColor>#ffff00</mBgColor>
+			<mSoundFile></mSoundFile>
+			<colorTriggerFgColor>#000000</colorTriggerFgColor>
+			<colorTriggerBgColor>#000000</colorTriggerBgColor>
+			<regexCodeList />
+			<regexCodePropertyList />
+			<TriggerGroup isActive="yes" isFolder="yes" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+				<name>Wall Down</name>
+				<script></script>
+				<triggerType>0</triggerType>
+				<conditonLineDelta>0</conditonLineDelta>
+				<mStayOpen>0</mStayOpen>
+				<mCommand></mCommand>
+				<packageName></packageName>
+				<mFgColor>#ff0000</mFgColor>
+				<mBgColor>#ffff00</mBgColor>
+				<mSoundFile></mSoundFile>
+				<colorTriggerFgColor>#000000</colorTriggerFgColor>
+				<colorTriggerBgColor>#000000</colorTriggerBgColor>
+				<regexCodeList />
+				<regexCodePropertyList />
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Icewall destroyed</name>
+					<script>deleteLine()
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;DeepSkyBlue&gt; ICEWALL DOWN: &lt;white&gt;"..matches.exit:upper())
+if (ra.IsLeader and ra.Settings.OverRide) or ra.IsLeader == "Me" then
+send("pt Icewall "..matches.exit:upper().." down!")
+end
+--^An icewall quickly melts into nothingness.$</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>0</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^You draw forth a card depicting Yudhishthira, The Red from your deck, raising it towards the (?&lt;exit&gt;\w+)\.$</string>
+						<string>^You send a lash of fire to strike the icewall to the (?&lt;exit&gt;\w+), and it quickly melts.$</string>
+						<string>^A blast of flame annihilates a wall of ice blocking the way (?&lt;exit&gt;\w+)\.$</string>
+						<string>^(\w+) draws forth a card depicting Yudhishthira, The Red from his deck, raising it towards the (?&lt;exit&gt;\w+)\.$</string>
+						<string>^The icewall to the (?&lt;exit&gt;\w+) quickly melts as (\w+) sends a lash of fire to scourge it.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+						<integer>1</integer>
+						<integer>1</integer>
+						<integer>1</integer>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Firewall destroyed</name>
+					<script>deleteLine()
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;ansiLightRed&gt; FIREWALL DOWN: &lt;white&gt;"..matches.exit:upper())
+if (ra.IsLeader and ra.Settings.OverRide) or ra.IsLeader == "Me" then
+send("pt Firewall "..matches.exit:upper().." down!")
+end
+</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>0</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^A wall of fire blocking the way (?&lt;exit&gt;\w+) vanishes in a hiss of steam.$</string>
+						<string>^A wall of fire blocking the way (?&lt;exit&gt;\w+) is extinguished in a hiss of steam.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Stonewall destroyed</name>
+					<script>deleteLine()
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;grey&gt; STONEWALL DOWN: &lt;white&gt;"..matches[2])
+if (ra.IsLeader and ra.Settings.OverRide) or ra.IsLeader == "Me" then
+send("pt Stonewall "..matches.exit:upper().." down!")
+end</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>0</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^A wall of rough stone to the (?&lt;exit&gt;\w+) fractures suddenly before collapsing.$</string>
+						<string>^(\w+) whips (\w+) tail around, striking the wall to the (?&lt;exit&gt;\w+) with a powerful blow\. A network of fine fractures spreads over its surface before it suddenly collapses.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Icewall melted</name>
+					<script>deleteLine()
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;DeepSkyBlue&gt; ICEWALL DOWN")
+if (ra.IsLeader and ra.Settings.OverRide) or ra.IsLeader == "Me" then
+send("pt Icewall melted!")
+end
+</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>0</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^An icewall quickly melts into nothingness.$</string>
+						<string>^The icewall quickly melts into nothingness.$</string>
+						<string>^(\w+) flicks a finger in the direction of a large wall of ice, and it instantly explodes into scalding steam.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+						<integer>1</integer>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+			</TriggerGroup>
+			<TriggerGroup isActive="yes" isFolder="yes" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+				<name>Wall Raised</name>
+				<script></script>
+				<triggerType>0</triggerType>
+				<conditonLineDelta>0</conditonLineDelta>
+				<mStayOpen>0</mStayOpen>
+				<mCommand></mCommand>
+				<packageName></packageName>
+				<mFgColor>#ff0000</mFgColor>
+				<mBgColor>#ffff00</mBgColor>
+				<mSoundFile></mSoundFile>
+				<colorTriggerFgColor>#000000</colorTriggerFgColor>
+				<colorTriggerBgColor>#000000</colorTriggerBgColor>
+				<regexCodeList />
+				<regexCodePropertyList />
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Thornwalled</name>
+					<script>deleteLine()
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;ForestGreen&gt; THORNWALL RAISED: &lt;white&gt;"..matches.exit:upper())
+if (ra.IsLeader and ra.Settings.OverRide) or ra.IsLeader == "Me" then
+send("pt Thornwall raised: "..matches.exit:upper())
+end</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>0</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^A wall of thorns rises up to the (?&lt;exit&gt;\w+), wicked barbs ready to pierce the flesh of the unwary.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="yes" isColorizerTrigger="yes" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Icewalled</name>
+					<script>deleteLine()
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;DeepSkyBlue&gt; ICEWALL RAISED: &lt;white&gt;"..matches.exit:upper())
+if (ra.IsLeader and ra.Settings.OverRide) or ra.IsLeader == "Me" then
+send("pt Icewall raised: "..matches.exit:upper())
+end
+</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>0</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#fc02ff</mFgColor>
+					<mBgColor>#0000ff</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^An icewall suddenly forms to the (?&lt;exit&gt;\w+)\.$</string>
+						<string>^You raise your hands dramatically and summon an icewall to the (?&lt;exit&gt;\w+)\.$</string>
+						<string>^(\w+) raises (\w+) hands dramatically and summons an icewall to the (?&lt;exit&gt;\w+)\.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+						<integer>1</integer>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="yes" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Firewalled</name>
+					<script>deleteLine()
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;ansiLightRed&gt; FIREWALL RAISED:&lt;white&gt; "..matches.exit:upper())
+if (ra.IsLeader and ra.Settings.OverRide) or ra.IsLeader == "Me" then
+send("pt Firewall raised: "..matches.exit:upper())
+end</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>0</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#0000ff</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^A firewall suddenly forms to the (?&lt;exit&gt;\w+)\.$</string>
+						<string>^(\w+) raises (\w+) hands dramatically, and conjures a (\w+) to the (?&lt;exit&gt;\w+)\.$</string>
+						<string>^You raise your hands dramatically, and conjure a firewall to the (?&lt;exit&gt;\w+)\.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+						<integer>1</integer>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Stonewalled</name>
+					<script>cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;grey&gt; STONEWALL RAISED: &lt;white&gt;"..matches.exit:upper())
+if (ra.IsLeader and ra.Settings.OverRide) or ra.IsLeader == "Me" then
+send("pt Stonewall raised: "..matches.exit:upper())
+end</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>0</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^A wall of rough stone rises from the earth to block the exit to the (?&lt;exit&gt;\w+)\.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+			</TriggerGroup>
+			<TriggerGroup isActive="yes" isFolder="yes" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+				<name>Walls in the way</name>
+				<script></script>
+				<triggerType>0</triggerType>
+				<conditonLineDelta>0</conditonLineDelta>
+				<mStayOpen>0</mStayOpen>
+				<mCommand></mCommand>
+				<packageName></packageName>
+				<mFgColor>#ff0000</mFgColor>
+				<mBgColor>#ffff00</mBgColor>
+				<mSoundFile></mSoundFile>
+				<colorTriggerFgColor>#000000</colorTriggerFgColor>
+				<colorTriggerBgColor>#000000</colorTriggerBgColor>
+				<regexCodeList />
+				<regexCodePropertyList />
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Wall In the Way</name>
+					<script>cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;yellow&gt; A WALL BLOCKED YOU!")
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;yellow&gt; A WALL BLOCKED YOU!")
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;yellow&gt; A WALL BLOCKED YOU!")</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>10</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ffff0a</mFgColor>
+					<mBgColor>#996633</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>A wall blocks your way.</string>
+						<string>A wall bars your line of sight.</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>3</integer>
+						<integer>3</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Wall blocked bomb</name>
+					<script>cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;DarkGoldenRod&gt; A WALL DETONATED YOUR BOMB EARLY!")
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;DarkGoldenRod&gt; A WALL DETONATED YOUR BOMB EARLY!")
+cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;DarkGoldenRod&gt; A WALL DETONATED YOUR BOMB EARLY!")</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>5</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^A (\w+) bomb gets caught upon the vicious thorns of the wall blocking the way, and with alarm you realise that you are now within the blast radius!$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Icewall here</name>
+					<script>cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;DeepSkyBlue&gt; Icewall: &lt;white&gt;"..matches.exit:upper())</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>10</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^An icewall is here, blocking passage to the (?&lt;exit&gt;\w+)\.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Firewall here</name>
+					<script>cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;ansiLightRed&gt; Firewall:&lt;white&gt; "..matches.exit:upper())</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>10</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^A scorching wall of fire stands here, blocking passage to the (?&lt;exit&gt;\w+)\.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Thornwall Here</name>
+					<script>cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;ForestGreen&gt; Thornwall: &lt;white&gt;"..matches.exit:upper())</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>10</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^A large wall of thorns stands here, barring passage to the (?&lt;exit&gt;\w+)\.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+				<Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+					<name>Stonewall Here</name>
+					<script>cecho("\n&lt;light_slate_blue&gt;[CombAtul] &lt;grey&gt; Stonewall: &lt;white&gt;"..matches.exit:upper())</script>
+					<triggerType>0</triggerType>
+					<conditonLineDelta>0</conditonLineDelta>
+					<mStayOpen>10</mStayOpen>
+					<mCommand></mCommand>
+					<packageName></packageName>
+					<mFgColor>#ff0000</mFgColor>
+					<mBgColor>#ffff00</mBgColor>
+					<mSoundFile></mSoundFile>
+					<colorTriggerFgColor>#000000</colorTriggerFgColor>
+					<colorTriggerBgColor>#000000</colorTriggerBgColor>
+					<regexCodeList>
+						<string>^A large wall of stone stands here, blocking passage to the (?&lt;exit&gt;\w+)\.$</string>
+					</regexCodeList>
+					<regexCodePropertyList>
+						<integer>1</integer>
+					</regexCodePropertyList>
+				</Trigger>
+			</TriggerGroup>
+		</TriggerGroup>
 				</TriggerGroup>
 			</TriggerGroup>
 		</TriggerGroup>

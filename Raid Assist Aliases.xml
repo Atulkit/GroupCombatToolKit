@@ -264,9 +264,11 @@ end
 				<packageName></packageName>
 				<regex>^zl (\w+)$</regex>
 			</Alias>
-			<Alias isActive="yes" isFolder="no">
+			<Alias isActive="no" isFolder="no">
 				<name>Target callers</name>
 				<script>--set this only if the leader(s) are not the primary target callers
+					-- Specific target callers commented out. target switch is in room depedent now
+					-- KEEP THIS DISABLED
 local person = matches[2]:title()
 if matches[3] then
   person2 = matches[3]:title()
@@ -309,7 +311,7 @@ cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zL2 &lt;name&gt; &lt;light_blue&gt;-Se
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zORDER&lt;light_blue&gt;-List target order for reordering")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zCALL(F)&lt;light_blue&gt;-Call target order, F forces announce")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zC(F)&lt;light_blue&gt;-Call current target, F forces announce")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zTC &lt;name&gt; &lt;name, if needed&gt; &lt;light_blue&gt;-Set specific target callers (1 or 2) if not leaders")
+--cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zTC &lt;name&gt; &lt;name, if needed&gt; &lt;light_blue&gt;-Set specific target callers (1 or 2) if not leaders")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zGROUP &lt;light_blue&gt;-Report leaders, target, target list, callers, and more to party")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zADD name (#)&lt;light_blue&gt;-Add enemy to list at end or into a spot")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zMULTI name, name, name, ect&lt;light_blue&gt;-Add several enemies at once")
@@ -350,7 +352,7 @@ cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zL&lt;light_blue&gt;-Set leader- USE G
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zORDER&lt;light_blue&gt;-List target order for reordering")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zCALL(F)&lt;light_blue&gt;-Call target order, F forces announce")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zC(F)&lt;light_blue&gt;-Call current target, F forces announce")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zTC &lt;name&gt; &lt;name, if needed&gt; &lt;light_blue&gt;-Set specific target callers (1 or 2) if not leaders")
+--cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zTC &lt;name&gt; &lt;name, if needed&gt; &lt;light_blue&gt;-Set specific target callers (1 or 2) if not leaders")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zGROUP &lt;light_blue&gt;-Report leaders, target, target list, callers, and more to party")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zADD name (#)&lt;light_blue&gt;-Add enemy to list at end or into a spot")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zMULTI name, name, name, ect&lt;light_blue&gt;-Add several enemies at once")
@@ -455,12 +457,13 @@ end
 cecho("&lt;snow&gt;-'zON/zOFF'")
 
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader.." &lt;snow&gt;-'zL'") 
-if ra.Caller ~= "" then
+-- Specific target callers commented out. target switch is in room depedent now
+<!-- if ra.Caller ~= "" then
 --cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller.."&lt;snow&gt;- ztc 'person'")
 end
 if ra.Caller2 ~= "" then
 --cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2.."&lt;snow&gt;-ztc 'person' 'person2'")
-end
+end -->
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", ").." &lt;snow&gt;- zEnemy")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;List cmds:     &lt;snow&gt;-'zORDER' 'zAdd name (#)' 'zREMOVE name' 'zAR cityletter'")
@@ -486,12 +489,13 @@ cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" ..ra
 
 
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader)
-if ra.Caller ~= "" then
+-- Specific target callers commented out. target switch is in room depedent now
+<!-- if ra.Caller ~= "" then
 --cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller)
 end
 if ra.Caller2 ~= "" then
 --cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2)
-end
+end -->
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", "))
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemied list:  &lt;MistyRose&gt;" .. ra.ListEnemied)
@@ -518,7 +522,8 @@ if ra.Leader == "Me" then
   else
   send("pt Leader: "..ra.Leader)
 end
-if ra.Caller == "" and ra.Caller2 == "" then
+-- Specific target callers commented out. target switch is in room depedent now
+<!-- if ra.Caller == "" and ra.Caller2 == "" then
   send("pt Follow "..ra.Leader.." targets")
   elseif ra.Caller ~= "" and ra.Caller2 == "" then
   send("pt Follow "..ra.Caller.." targets")
@@ -528,7 +533,7 @@ if ra.Caller == "" and ra.Caller2 == "" then
   send("pt Follow Atul targets")
   else
   send("pt Follow "..ra.Leader.." targets")
-end
+end -->
 send("pt Targeting: "..target)
 send("pt Enemy list: "..table.concat(ra.target_list, ", "))
 send("pt Rally at "..gmcp.Room.Info.name..", in "..gmcp.Room.Info.area)
@@ -953,8 +958,8 @@ end
 
 --Clears Leaders and Callers
 ra.Leader = ""
-ra.Caller = ""
-ra.Caller2 = ""
+--ra.Caller = ""
+--ra.Caller2 = ""
 
 --Clear targets
 target = "none"
