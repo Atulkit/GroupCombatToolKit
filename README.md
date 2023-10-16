@@ -21,13 +21,13 @@ These steps are the quick way to set up the system to follow party target calls.
 3. `zA` - Toggle on 'auto' target switching.
 4. `zSTAT` - Shows the the system status and what is toggled on/off.
 5.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
-6.  Optional: `zREPORT` - Will report targets movement and call afflictions you give.
-7.  Optional: `zLOUD` - Will echo your target switches to the party if not leading or a designated caller.
+6.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
+7.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
 
-- `zR` - Switches to first target in the list that is in the room
+- `zR` - Switches to first target in the target order that is in the room
 - `zN` - Switch to next target in list
 - `zF` - Switch to first target in order
-- `zT` - Switch to last party target called (by leader or callers)
+- `zT` - Switch to last party target called
 
 # To Lead
 
@@ -36,10 +36,11 @@ To set up the system to lead. Follow the above steps, plus:
 1. `zL <ME>` - Sets you as the group leader. You will echo all target switches to the party. (`zLOUD` is does not need to be toggled on.)
 2. `zBW <city name or first letter>` - Auto adds everyone from a city to target list
 3. `zCITY <city name of first letter>` - Sets primary target city.
-4. `zADD <enemy> / zMULTI <enemy> <enemy> <enemy>` - Adds enemy/enemies to target list.
+4. `zADD <enemy> / zMULTI <enemy> <enemy> <enemy>` - Manually adds enemy/enemies to target list.
 5. `zORDER` - Show target list and set target order.
 6. `zF` - Set and call first target to party.
-7. `zGROUP` - Reports information from `zSTAT` to party.
+7. `zREPORT` - Toggle on reporting movement, afflictions, and walls to party.
+8. `zGROUP` - Reports information from `zSTAT` to party.
 
 ## Aliases
 
@@ -68,7 +69,10 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zBW <city letter>` - Add complete city to target order
 - `zAR (h|m|t|a|c|e|r|all)` - Adds new people in room from that city to list
 - `zRESET` - Empty target list
-- `zREPORT` - Toggle highlighting target leaving and affliction calling
+- `zREPORT` - Toggle on/off reporting target movement, affliction, and wall callouts all at once
+- `zMOVE` - Toggle reporting target movement
+- `zAFFS` - Toggle reporting afflictions
+- `zWALLS` - Toggle highlighting walls
 - `zCITY` - Change default city to add room targets from
 - `zLIST` - Display saved lists to use
 - `zDELETE <name>` - Delete a preset
