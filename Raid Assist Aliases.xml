@@ -458,12 +458,12 @@ cecho("&lt;snow&gt;-'zON/zOFF'")
 
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader.." &lt;snow&gt;-'zL'") 
 -- Specific target callers commented out. target switch is in room depedent now
-<!-- if ra.Caller ~= "" then
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller.."&lt;snow&gt;- ztc 'person'")
-end
-if ra.Caller2 ~= "" then
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2.."&lt;snow&gt;-ztc 'person' 'person2'")
-end -->
+-- if ra.Caller ~= "" then
+--cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller.."&lt;snow&gt;- ztc 'person'")
+--end
+--if ra.Caller2 ~= "" then
+--cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2.."&lt;snow&gt;-ztc 'person' 'person2'")
+--end
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", ").." &lt;snow&gt;- zEnemy")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;List cmds:     &lt;snow&gt;-'zORDER' 'zAdd name (#)' 'zREMOVE name' 'zAR cityletter'")
@@ -490,12 +490,12 @@ cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" ..ra
 
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader)
 -- Specific target callers commented out. target switch is in room depedent now
-<!-- if ra.Caller ~= "" then
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller)
-end
-if ra.Caller2 ~= "" then
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2)
-end -->
+-- if ra.Caller ~= "" then
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Target Caller  &lt;dodger_blue&gt;" ..ra.Caller)
+-- end
+-- if ra.Caller2 ~= "" then
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;2nd Caller     &lt;dodger_blue&gt;" ..ra.Caller2)
+-- end
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", "))
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemied list:  &lt;MistyRose&gt;" .. ra.ListEnemied)
@@ -523,17 +523,17 @@ if ra.Leader == "Me" then
   send("pt Leader: "..ra.Leader)
 end
 -- Specific target callers commented out. target switch is in room depedent now
-<!-- if ra.Caller == "" and ra.Caller2 == "" then
-  send("pt Follow "..ra.Leader.." targets")
-  elseif ra.Caller ~= "" and ra.Caller2 == "" then
-  send("pt Follow "..ra.Caller.." targets")
-  elseif ra.Caller ~= "" and ra.Caller ~= "" then
-  send("pt Follow "..ra.Caller.." and "..ra.Caller2.." targets")
-  elseif ra.Leader then
-  send("pt Follow Atul targets")
-  else
-  send("pt Follow "..ra.Leader.." targets")
-end -->
+-- if ra.Caller == "" and ra.Caller2 == "" then
+  --send("pt Follow "..ra.Leader.." targets")
+  --elseif ra.Caller ~= "" and ra.Caller2 == "" then
+  --send("pt Follow "..ra.Caller.." targets")
+  --elseif ra.Caller ~= "" and ra.Caller ~= "" then
+  --send("pt Follow "..ra.Caller.." and "..ra.Caller2.." targets")
+  --elseif ra.Leader then
+  --send("pt Follow Atul targets")
+  --else
+  --send("pt Follow "..ra.Leader.." targets")
+-- end
 send("pt Targeting: "..target)
 send("pt Enemy list: "..table.concat(ra.target_list, ", "))
 send("pt Rally at "..gmcp.Room.Info.name..", in "..gmcp.Room.Info.area)
