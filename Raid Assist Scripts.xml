@@ -17,6 +17,7 @@ ra.Settings.SetTarget = ra.Settings.SetTarget or false
 ra.Settings.OverRide = ra.Settings.OverRide or false
 ra.Settings.MoveReporting = ra.Settings.MoveReporting or false
 ra.Settings.AffCalling = ra.Settings.AffCalling or false
+ra.Settings.WallCalling = ra.Settings.WallCalling or false
 ra.Settings.CityTargeting = ra.Settings.CityTargeting or "none"
 
 ra.ListEnemied = ra.ListEnemied or "Nope"
