@@ -1278,7 +1278,6 @@ if matches[2] == gmcp.Comm.Channel.Text.talker
           --send("settarget "..target, false)
           --if you have your own targeting alias or function, insert it below. native target alias is included in alias folders
           targeting(target)
-          echo("\n Used Target function")
           cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white&gt;=================== Target switched: "..target:upper().." ===================")
           cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white&gt;=================== Target switched: "..target:upper().." ===================")
           raiseEvent("RA Target Changed")
@@ -1286,13 +1285,11 @@ if matches[2] == gmcp.Comm.Channel.Text.talker
             -- this will echo your target switch in party is 'zLoud' is active
             if ra.Settings.OverRide == true then
               send("pt Target: "..target)
-              send("pt Override is working")
             else end
         
         else
-  	      cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;black:SpringGreen&gt;No enemies from target order in the room! &lt;black:cyan&gt;--&gt;Set your own!!")
+  	  cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;black:SpringGreen&gt;No enemies from target order in the room! &lt;black:cyan&gt;--&gt;Set your own!!")
           cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;black:SpringGreen&gt;No enemies from target order in the room! &lt;black:cyan&gt;--&gt;Set your own!!")
-          send("pt That target isn't here!")
         end
     
     --if you want to execute the switch- tells you target was switched and stores it in ToTarget for swap
@@ -1301,9 +1298,8 @@ if matches[2] == gmcp.Comm.Channel.Text.talker
         cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white&gt;=================== Party Target is: "..ra.ToTarget:upper().." ===================")
         cecho("\n&lt;OrangeRed&gt;(CombatAtul):&lt;black:white&gt;=================== Party Target is: "..ra.ToTarget:upper().." ===================")
     else
-	    cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;--&gt;Set your own!!")
       cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;--&gt;Set your own!!")
-      send("pt That target isn't in my room!")
+      cecho("\n&lt;OrangeRed&gt;(CombatAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;--&gt;Set your own!!")
     end
 end</script>
 						<triggerType>0</triggerType>
