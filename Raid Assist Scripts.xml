@@ -3,9 +3,14 @@
 <MudletPackage version="1.001">
 	<ScriptPackage>
 		<ScriptGroup isActive="yes" isFolder="yes">
-			<name>Raid assist</name>
-			<packageName></packageName>
-			<script>
+			<name>Raid Assist Scripts</name>
+			<packageName>Raid Assist Scripts</packageName>
+			<script></script>
+			<eventHandlerList />
+			<ScriptGroup isActive="yes" isFolder="yes">
+				<name>Raid assist</name>
+				<packageName></packageName>
+				<script>
 --Set all initial default variables, some will be overwritten when settings finish loading 
 ra = ra or {}
 ra.Settings = ra.Settings or {}
@@ -48,11 +53,11 @@ if targetassist then
 	
 end
 </script>
-			<eventHandlerList />
-			<Script isActive="yes" isFolder="no">
-				<name>Changelog</name>
-				<packageName></packageName>
-				<script>--Note: Some features are AK dependent.
+				<eventHandlerList />
+				<Script isActive="yes" isFolder="no">
+					<name>Changelog</name>
+					<packageName></packageName>
+					<script>--Note: Some features are AK dependent.
 
 -- All changes and updates will be through GitHub now.
 -- https://github.com/Atulkit/GroupCombatToolKit 
@@ -160,12 +165,12 @@ Added Party Gag trigger to gag party messages (DISABLE THIS IF YOU DO NOT PUSH M
 
 --]]
 </script>
-				<eventHandlerList />
-			</Script>
-			<Script isActive="no" isFolder="no">
-				<name>Your stuff</name>
-				<packageName></packageName>
-				<script>--!!!!!Important below!!!!!
+					<eventHandlerList />
+				</Script>
+				<Script isActive="no" isFolder="no">
+					<name>Your stuff</name>
+					<packageName></packageName>
+					<script>--!!!!!Important below!!!!!
 --[[
 If you have target tracking stuff or display things that need reseting, put that stuff inside the function ra.YourTargetStuff() below and remove comment blocks
 Move this outside of the folder so future updates don't remove your changes
@@ -207,12 +212,12 @@ registerAnonymousEventHandler("RA Target Changed", "ra.YourTargetStuff")
 
 --Line below here is used to raise a target change event if you wish to add target switching stuff to the system and run the above function
 --raiseEvent("RA Target Changed")</script>
-				<eventHandlerList />
-			</Script>
-			<Script isActive="yes" isFolder="no">
-				<name>Useful for you</name>
-				<packageName></packageName>
-				<script>--This function takes a name you pass it to check if a person is on your target list to act on. Returns true if they are or false
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Useful for you</name>
+					<packageName></packageName>
+					<script>--This function takes a name you pass it to check if a person is on your target list to act on. Returns true if they are or false
 -- Use it like this usually in a reflex... ra.IsTarget(matches[2]) ... if you want to reflexively do something to a person on your list 
 function ra.IsTarget(name)
 	if table.contains(ra.target_list, name) then
@@ -230,12 +235,57 @@ function ra.TargetAdd(name)
 		table.insert(ra.target_list, name)
 	end
 end</script>
-				<eventHandlerList />
-			</Script>
-			<Script isActive="yes" isFolder="no">
-				<name>Target change</name>
-				<packageName></packageName>
-				<script>--Script handling swapping targets
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Targeting function</name>
+					<packageName></packageName>
+					<script>function targeting(var)
+send("settarget "..var)
+target = var:lower():title()
+
+--if you do not have AK. Comment this out or delete.
+ak.highlighttarget = ak.highlighttarget or true --Change This To False if Errors
+if ak.highlighttarget == true then
+   if idtwo then killTrigger(idtwo) end
+   idtwo = tempTrigger(target, [[selectString("]] .. target .. [[", 1) fg("red") resetFormat()]])
+   target = target:title()
+   if id then killTrigger(id) end
+   id = tempTrigger(target, [[selectString("]] .. target .. [[", 1) fg("red") resetFormat()]])
+else 
+end
+
+if ak.stack and ak.stack == "none" then ak.classenable() end
+
+--If you do not have Legacy. Comment this out or delete
+if Legacy.NDB.db[target] then
+  local color = Legacy.Settings.NDB.Config[Legacy.NDB.db[target].city:lower()].color
+  Legacy.NDB.lookup(target)
+  sendAll("unally "..target, "enemy "..target)
+  possibleClass = Legacy.NDB.db[target].class
+  Legacy.bigEcho("Target set to: "..("&lt;"..color.."&gt;" or "&lt;white&gt;")..target:title().." &lt;DimGrey&gt;(&lt;gold&gt;Level "..Legacy.NDB.db[target].level.." "..Legacy.NDB.db[target].class.."&lt;DimGrey&gt;)", "purple", "white")
+  tempTimer(4, [[if Legacy.NDB.db[target].class ~= possibleClass then   local color = Legacy.Settings.NDB.Config[Legacy.NDB.db[target].city:lower()].color
+   Legacy.echo("Adjusted &lt;"..color.."&gt;"..target.."'s &lt;white&gt;class to &lt;gold&gt;"..Legacy.NDB.db[target].class.."&lt;white&gt;.") end]])
+end
+
+-- This will always call your target to party 
+-- if isActive("Raid assist", "trigger") == 1 then 
+-- elseif isActive("Raid assist", "trigger") == 0 then
+-- send("pt Target: "..target)
+-- else end
+
+echo("\n")
+cecho("&lt;cyan&gt; Target Changed to "..target)
+echo("\n")
+
+end
+</script>
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Target change</name>
+					<packageName></packageName>
+					<script>--Script handling swapping targets
 --Burst check gets called if the person who died is your target and you like having your target changed
 --Burstcheck looks at a list of recently bursted people and if your target isn't on it, looks for a new target in the room
 
@@ -246,12 +296,12 @@ function ra.Burstcheck(name)
 end
 
 </script>
-				<eventHandlerList />
-			</Script>
-			<Script isActive="yes" isFolder="no">
-				<name>Target list ordering</name>
-				<packageName></packageName>
-				<script>--Display target list for reordering, this makes clickable dialog to shift target order around or remove people
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Target list ordering</name>
+					<packageName></packageName>
+					<script>--Display target list for reordering, this makes clickable dialog to shift target order around or remove people
 function ra.order_report()
 
 	cecho("\n&lt;OrangeRed&gt;---Reorder target list---  ("..#ra.target_list..")\n")
@@ -337,12 +387,12 @@ function ra.Shift_remove(name)
 	ra.autoUnenemy(name)
 	ra.order_report()
 end</script>
-				<eventHandlerList />
-			</Script>
-			<Script isActive="yes" isFolder="no">
-				<name>Save and load presets and settings</name>
-				<packageName></packageName>
-				<script>--Save function to create presets
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Save and load presets and settings</name>
+					<packageName></packageName>
+					<script>--Save function to create presets
 function ra.save(name)
 	
 	--capitalize to avoid errors
@@ -460,12 +510,12 @@ registerAnonymousEventHandler("sysLoadEvent", "ra.load")					--Load presets on s
 
 
 </script>
-				<eventHandlerList />
-			</Script>
-			<Script isActive="yes" isFolder="no">
-				<name>Raid assist functions</name>
-				<packageName></packageName>
-				<script>--Handle single auto enemy
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Raid assist functions</name>
+					<packageName></packageName>
+					<script>--Handle single auto enemy
 function ra.autoEnemy(name)
 	local name = name
 	if ra.Settings.SetEnemy == "Yep" then
@@ -523,12 +573,12 @@ end
 
 
 </script>
-				<eventHandlerList />
-			</Script>
-			<Script isActive="yes" isFolder="no">
-				<name>Room targeting</name>
-				<packageName></packageName>
-				<script>--Full credit to Pyori for this Room capturing code in the Player Targeting scripts- Would have taken me forever to figure out how to do this
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Room targeting</name>
+					<packageName></packageName>
+					<script>--Full credit to Pyori for this Room capturing code in the Player Targeting scripts- Would have taken me forever to figure out how to do this
 function ra.RoomPeople(event)
 	if event == "gmcp.Room.Players" then
 		
@@ -568,6 +618,7 @@ function ra.RoomTarget()
     		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Found and targeted  &lt;IndianRed&gt;"..target.."!")
 				cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Found and targeted  &lt;IndianRed&gt;"..target.."!")
 				cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Found and targeted  &lt;IndianRed&gt;"..target.."!")
+        expandAlias("t "..target)
 				raiseEvent("RA Target Changed")	
 				ra.announcer("Single")
     		break
@@ -582,12 +633,12 @@ end
 
 
 </script>
-				<eventHandlerList />
-			</Script>
-			<Script isActive="yes" isFolder="no">
-				<name>Room gag</name>
-				<packageName></packageName>
-				<script>--This function is used to find the line for where a room description starts 
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Room gag</name>
+					<packageName></packageName>
+					<script>--This function is used to find the line for where a room description starts 
 --Good for either gagging a room description or setting up a gated trigger to read through a room description to pick things up (eg. If people are souls, directions of things)
 
 function RoomTitle()
@@ -604,12 +655,12 @@ function RoomTitle()
 	end
 end
 </script>
-				<eventHandlerList />
-			</Script>
-			<ScriptGroup isActive="yes" isFolder="yes">
-				<name>Useful code snippets</name>
-				<packageName></packageName>
-				<script>--[[
+					<eventHandlerList />
+				</Script>
+				<ScriptGroup isActive="yes" isFolder="yes">
+					<name>Useful code snippets</name>
+					<packageName></packageName>
+					<script>--[[
 -- I recomment adding this to your targeting alias with the following if statement
 
 if ndb.getcity(target) ~= "Hashan" then
@@ -670,7 +721,8 @@ ra.announcer("Single")
 
 
 </script>
-				<eventHandlerList />
+					<eventHandlerList />
+				</ScriptGroup>
 			</ScriptGroup>
 		</ScriptGroup>
 	</ScriptPackage>
