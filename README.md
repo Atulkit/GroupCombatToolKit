@@ -14,6 +14,14 @@ To install the system:
 
 # Basic Setup
 
+## Targeting Alias and Functions
+**NOTE: This package comes with a target alias and target function script. If you have your own be sure to disable your own or replace the ones in this package**
+Disable/Replace:
+- 'targeting alias' in aliases folder
+- 'targeting funtion' in scripts folder
+- Search for 'targeting(target)' and replace with your own target function or alias
+
+## Setting up to follow party targets
 These steps are the quick way to set up the system to follow party target calls.
 
 1. `zOn` - Turns the system on.
@@ -29,7 +37,7 @@ These steps are the quick way to set up the system to follow party target calls.
 - `zF` - Switch to first target in order
 - `zT` - Switch to last party target called
 
-# To Lead
+# To Lead Groups
 
 To set up the system to lead. Follow the above steps, plus:
 
@@ -42,7 +50,7 @@ To set up the system to lead. Follow the above steps, plus:
 7. `zREPORT` - Toggle on reporting movement, afflictions, and walls to party.
 8. `zGROUP` - Reports information from `zSTAT` to party.
 
-## Aliases
+## All Aliases
 
 List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` will give the full and up to date list in game.
 
