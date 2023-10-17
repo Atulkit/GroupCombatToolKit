@@ -9,14 +9,20 @@
 			<packageName>Raid Assist Aliases</packageName>
 			<regex></regex>
 			<AliasGroup isActive="yes" isFolder="yes">
-				<name>Raid assist</name>
+				<name>Raid Assist Aliases</name>
 				<script></script>
 				<command></command>
-				<packageName></packageName>
+				<packageName>Raid Assist Aliases</packageName>
 				<regex></regex>
-				<Alias isActive="yes" isFolder="no">
-					<name>Raid assist on off</name>
-					<script>if matches[2] == "on" then
+				<AliasGroup isActive="yes" isFolder="yes">
+					<name>Raid assist</name>
+					<script></script>
+					<command></command>
+					<packageName></packageName>
+					<regex></regex>
+					<Alias isActive="yes" isFolder="no">
+						<name>Raid assist on off</name>
+						<script>if matches[2] == "on" then
 	enableTrigger("Raid assist")
   --RelayAffs = true
 	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;On &lt;SlateGrey&gt;and ready!")
@@ -28,13 +34,22 @@ elseif matches[2] == "off" then
   --RelayAffs = false
 	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;IndianRed&gt;Off &lt;SlateGrey&gt;and waiting!")
 end</script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^z(on|off)$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Add enemy</name>
-					<script>--Alias to add enemies to the list, and will try to spellcheck with Name database
+						<command></command>
+						<packageName></packageName>
+						<regex>^z(on|off)$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>targeting alias</name>
+						<script>targeting(matches[2])
+
+--If your targetting errors, try setting ak.highlighttarget to false</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^t (.+)$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Add enemy</name>
+						<script>--Alias to add enemies to the list, and will try to spellcheck with Name database
 
 local new_enemy = matches[2]:lower():title()
 local position = matches[3] or #ra.target_list
@@ -82,13 +97,13 @@ end
 
 
 </script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zadd (\w+) ?(\d+)?$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Add multiple names</name>
-					<script>--Takes multiple names in to add 
+						<command></command>
+						<packageName></packageName>
+						<regex>^zadd (\w+) ?(\d+)?$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Add multiple names</name>
+						<script>--Takes multiple names in to add 
 --Yes, I agree, this pattern is a little rediculous! Basically it forces entering names with or without comma and won't allow mixing!
 --Splits the name up by ,(space) or just spaces if those are used instead
 --Runs through the list checking if they are on the targetlist already to skip, and also attempted to enemy
@@ -119,13 +134,13 @@ cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Added: &lt;IndianRed&gt;"
 
 
 </script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zmulti ((((\w+)\, )+(\w+))|(((\w+)\ )+(\w+)))$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Remove enemy</name>
-					<script>local new_enemy = matches[2]:title()
+						<command></command>
+						<packageName></packageName>
+						<regex>^zmulti ((((\w+)\, )+(\w+))|(((\w+)\ )+(\w+)))$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Remove enemy</name>
+						<script>local new_enemy = matches[2]:title()
  
 --Remove from the target list
 table.remove(ra.target_list, table.index_of(ra.target_list, new_enemy))
@@ -137,13 +152,13 @@ cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Target order is: &lt;lemo
 ra.autoUnenemy(new_enemy)
 
 </script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zremove (\w+)$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Enemy the list</name>
-					<script>--Functions to set the target list to be your enemies
+						<command></command>
+						<packageName></packageName>
+						<regex>^zremove (\w+)$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Enemy the list</name>
+						<script>--Functions to set the target list to be your enemies
 
 cecho("&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt; Setting enemies to target list!")
 
@@ -156,13 +171,13 @@ end
 
 
 ra.ListEnemied = "Yep"																					--For status report- enemies have been set</script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zenemy$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Partial name targeting</name>
-					<script>-- Uses target order and allows retargeting with first couple letters
+						<command></command>
+						<packageName></packageName>
+						<regex>^zenemy$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Partial name targeting</name>
+						<script>-- Uses target order and allows retargeting with first couple letters
 local person = matches[2]:lower():title()
 local found = false
 
@@ -192,13 +207,13 @@ send("settarget "..target, false)
 if found == false then
 	cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;lemon_chiffon&gt; Didn't match anyone.")
 end</script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zt (\w+)$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Quick target change</name>
-					<script>--Set of if statements to check what type of switch is wanted
+						<command></command>
+						<packageName></packageName>
+						<regex>^zt (\w+)$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Quick target change</name>
+						<script>--Set of if statements to check what type of switch is wanted
 
 if matches[2] == "n" then
 		--Next in line to die
@@ -227,25 +242,25 @@ if matches[2] == "n" then
 		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Next target: &lt;IndianRed&gt;" ..target)
 end
 --send("settarget "..target, false)
-expandAlias("t "..target)
+targeting(target)
 
 
 ra.announcer("Single")
 raiseEvent("RA Target Changed")</script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^z(t|n|f|(\d+))$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Reorder enemies</name>
-					<script>ra.order_report()</script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zorder$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Raid leader set</name>
-					<script>--Set the leader calling the target list and calling target changes
+						<command></command>
+						<packageName></packageName>
+						<regex>^z(t|n|f|(\d+))$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Reorder enemies</name>
+						<script>ra.order_report()</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zorder$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Raid leader set</name>
+						<script>--Set the leader calling the target list and calling target changes
 
 
 -- if ra.Leader == "Me" or ra.Leader == "Atul" then
@@ -266,13 +281,13 @@ end
 
 
 </script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zl (\w+)$</regex>
-				</Alias>
-				<Alias isActive="no" isFolder="no">
-					<name>Target callers</name>
-					<script>--set this only if the leader(s) are not the primary target callers
+						<command></command>
+						<packageName></packageName>
+						<regex>^zl (\w+)$</regex>
+					</Alias>
+					<Alias isActive="no" isFolder="no">
+						<name>Target callers</name>
+						<script>--set this only if the leader(s) are not the primary target callers
 -- Specific target callers commented out. target switch is in room depedent now
 -- KEEP THIS DISABLED
 local person = matches[2]:title()
@@ -297,19 +312,19 @@ if person2 == "None" or person2 == "Clear" then
 		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;red&gt; Secondary target caller is: &lt;yellow&gt;".. ra.Caller2)
 end
 </script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^ztc (\w+) ?(\w+)?$</regex>
-				</Alias>
-				<AliasGroup isActive="yes" isFolder="yes">
-					<name>Help</name>
-					<script></script>
-					<command></command>
-					<packageName></packageName>
-					<regex></regex>
-					<Alias isActive="yes" isFolder="no">
-						<name>Full help</name>
-						<script>cecho("\n&lt;OrangeRed&gt;---Party combat system commands: Full---")
+						<command></command>
+						<packageName></packageName>
+						<regex>^ztc (\w+) ?(\w+)?$</regex>
+					</Alias>
+					<AliasGroup isActive="yes" isFolder="yes">
+						<name>Help</name>
+						<script></script>
+						<command></command>
+						<packageName></packageName>
+						<regex></regex>
+						<Alias isActive="yes" isFolder="no">
+							<name>Full help</name>
+							<script>cecho("\n&lt;OrangeRed&gt;---Party combat system commands: Full---")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zON,OFF&lt;light_blue&gt;-Raid system all on or off")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSTAT&lt;light_blue&gt;-Raid system info")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zL &lt;name or 'Me'&gt;&lt;light_blue&gt;-Set leader")
@@ -348,13 +363,13 @@ cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSET name&lt;light_blue&gt;-Replicate 
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSS&lt;light_blue&gt;-Force save settings")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zLS&lt;light_blue&gt;-Force load settings")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zRE&lt;light_blue&gt;-Reset QL room gag without clearing target order")</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zhelp2$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Help</name>
-						<script>cecho("\n&lt;OrangeRed&gt;---Party combat commands: Basic---")
+							<command></command>
+							<packageName></packageName>
+							<regex>^zhelp2$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Help</name>
+							<script>cecho("\n&lt;OrangeRed&gt;---Party combat commands: Basic---")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zON,OFF&lt;light_blue&gt;-Raid system all on or off")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSTAT&lt;light_blue&gt;-Raid system info")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zL&lt;light_blue&gt;-Set leader- USE GL if you have TARGET ASSIST!")
@@ -386,25 +401,116 @@ cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zAFFS&lt;light_blue&gt;-Toggle reporti
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zWALLS&lt;light_blue&gt;-Toggle reporting walls")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zCITY (letter or name)&lt;light_blue&gt;-Change default city to new add room targets from")
 cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zHELP2&lt;light_blue&gt;-Full help list")</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zhelp$</regex>
-					</Alias>
-				</AliasGroup>
-				<Alias isActive="yes" isFolder="no">
-					<name>Room targeting</name>
-					<script>--Use zr or zrt to check all in room and look at target list to target highest priority person
+							<command></command>
+							<packageName></packageName>
+							<regex>^zhelp$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Status report with commands</name>
+							<script>cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Raid assist", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Raid assist", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
+cecho("&lt;snow&gt;-'zON/zOFF'")
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader.." &lt;snow&gt;-'zL'") 
+-- Specific target callers commented out. target switch is in room depedent now
+-- if ra.Caller ~= "" then
+--cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;Target Caller  &amp;lt;dodger_blue&amp;gt;" ..ra.Caller.."&amp;lt;snow&amp;gt;- ztc 'person'")
+--end
+--if ra.Caller2 ~= "" then
+--cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;2nd Caller     &amp;lt;dodger_blue&amp;gt;" ..ra.Caller2.."&amp;lt;snow&amp;gt;-ztc 'person' 'person2'")
+--end
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", ").." &lt;snow&gt;- zEnemy")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;List cmds:     &lt;snow&gt;-'zORDER' 'zAdd name (#)' 'zREMOVE name' 'zAR cityletter'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;List cmds2:    &lt;snow&gt;-'zSWAP name #'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemied list:  &lt;MistyRose&gt;" .. ra.ListEnemied.."   &lt;snow&gt;-'zENEMY'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Auto-enemy:    &lt;MistyRose&gt;" .. ra.Settings.SetEnemy.."   &lt;snow&gt;-'zAUTO'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Call target:   &lt;MistyRose&gt;" .. tostring(ra.IsLeader):title().." &lt;snow&gt;-'zC(F)', 'zCALL(F)', 'zLOUD'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Re-Targeting:  &lt;MistyRose&gt;" .. tostring(ra.Settings.SetTarget):title().." &lt;snow&gt;-'zA' or 'zR to room scan'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Moved report:  &lt;MistyRose&gt;" .. tostring(ra.Settings.MoveReporting):title().." &lt;snow&gt;-'zMOVE'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Aff reporting: &lt;MistyRose&gt;" .. tostring(ra.Settings.AffCalling):title().." &lt;snow&gt;-'zAFFS'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Wall reporting:&lt;MistyRose&gt;" .. tostring(ra.Settings.WallCalling):title().." &lt;snow&gt;-'zWALLS'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;City target:   &lt;MistyRose&gt;" .. ra.Settings.CityTargeting.." &lt;snow&gt;- 'zCITY name' or letter")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" ..ra.Settings.TargetSwitch.." &lt;snow&gt;-'zT to target', 'zP to toggle setting'")
+</script>
+							<command></command>
+							<packageName></packageName>
+							<regex>^zstat2$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Status report short version</name>
+							<script>cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Raid assist", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Raid assist", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
+
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader)
+-- Specific target callers commented out. target switch is in room depedent now
+-- if ra.Caller ~= "" then
+--cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;Target Caller  &amp;lt;dodger_blue&amp;gt;" ..ra.Caller.."&amp;lt;snow&amp;gt;- ztc 'person'")
+--end
+--if ra.Caller2 ~= "" then
+--cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;2nd Caller     &amp;lt;dodger_blue&amp;gt;" ..ra.Caller2.."&amp;lt;snow&amp;gt;-ztc 'person' 'person2'")
+--end
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", "))
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemied list:  &lt;MistyRose&gt;" .. ra.ListEnemied)
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Auto-enemy:    &lt;MistyRose&gt;" .. ra.Settings.SetEnemy)
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Call target:   &lt;MistyRose&gt;" .. tostring(ra.IsLeader):title())
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Re-Targeting:  &lt;MistyRose&gt;" .. tostring(ra.Settings.SetTarget):title())
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Moved report:  &lt;MistyRose&gt;" .. tostring(ra.Settings.MoveReporting):title())
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Aff reporting: &lt;MistyRose&gt;" .. tostring(ra.Settings.AffCalling):title())
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Wall reporting:&lt;MistyRose&gt;" .. tostring(ra.Settings.WallCalling):title())
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;City target:   &lt;MistyRose&gt;" .. ra.Settings.CityTargeting)
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" .. ra.Settings.TargetSwitch)
+
+
+
+</script>
+							<command></command>
+							<packageName></packageName>
+							<regex>^zstat$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Group report</name>
+							<script>cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Raid assist", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Raid assist", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
+if ra.Leader == "Me" then
+  send("pt Leader: Atul")
+  else
+  send("pt Leader: "..ra.Leader)
+end
+-- Specific target callers commented out. target switch is in room depedent now
+-- if ra.Caller == "" and ra.Caller2 == "" then
+  --send("pt Follow "..ra.Leader.." targets")
+  --elseif ra.Caller ~= "" and ra.Caller2 == "" then
+  --send("pt Follow "..ra.Caller.." targets")
+  --elseif ra.Caller ~= "" and ra.Caller ~= "" then
+  --send("pt Follow "..ra.Caller.." and "..ra.Caller2.." targets")
+  --elseif ra.Leader then
+  --send("pt Follow Atul targets")
+  --else
+  --send("pt Follow "..ra.Leader.." targets")
+-- end
+send("pt Targeting: "..target)
+send("pt Enemy list: "..table.concat(ra.target_list, ", "))
+send("pt Rally at "..gmcp.Room.Info.name..", in "..gmcp.Room.Info.area)
+send("pt City target: " .. ra.Settings.CityTargeting)</script>
+							<command></command>
+							<packageName></packageName>
+							<regex>^zgroup$</regex>
+						</Alias>
+					</AliasGroup>
+					<Alias isActive="yes" isFolder="no">
+						<name>Room targeting</name>
+						<script>--Use zr or zrt to check all in room and look at target list to target highest priority person
 
 enableTrigger("Stop (Room gag)")
 enableTrigger("Room gag")
 send("ql",false)</script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zrt?$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>City target adding</name>
-					<script>--This takes a few different forms of a city name and uses bw to make a target order 
+						<command></command>
+						<packageName></packageName>
+						<regex>^zrt?$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>City target adding</name>
+						<script>--This takes a few different forms of a city name and uses bw to make a target order 
 --Before sending the bw text it opens the trigger gate called BW capture 
 
 local city = matches[2]:lower()
@@ -438,13 +544,13 @@ if city == "t" or city == "targ" or city == "targossas" then
 end
 
 </script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zbw (\w+)$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Call regardless of leading</name>
-					<script>--Overrides allowing to call out target changes (and list order) as if you are the leader- good to have a few people with this on
+						<command></command>
+						<packageName></packageName>
+						<regex>^zbw (\w+)$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Call regardless of leading</name>
+						<script>--Overrides allowing to call out target changes (and list order) as if you are the leader- good to have a few people with this on
 if ra.Leader ~= "Me" then
   if ra.IsLeader == false then
     	ra.IsLeader = true
@@ -459,104 +565,13 @@ if ra.Leader ~= "Me" then
 	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;lemon_chiffon&gt;YOU are the &lt;SpringGreen&gt;Leader&lt;lemon_chiffon&gt;, don't worry about this!")	
 end
 </script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zloud$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Status report with commands</name>
-					<script>cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Raid assist", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Raid assist", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
-cecho("&lt;snow&gt;-'zON/zOFF'")
-
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader.." &lt;snow&gt;-'zL'") 
--- Specific target callers commented out. target switch is in room depedent now
--- if ra.Caller ~= "" then
---cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;Target Caller  &amp;lt;dodger_blue&amp;gt;" ..ra.Caller.."&amp;lt;snow&amp;gt;- ztc 'person'")
---end
---if ra.Caller2 ~= "" then
---cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;2nd Caller     &amp;lt;dodger_blue&amp;gt;" ..ra.Caller2.."&amp;lt;snow&amp;gt;-ztc 'person' 'person2'")
---end
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", ").." &lt;snow&gt;- zEnemy")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;List cmds:     &lt;snow&gt;-'zORDER' 'zAdd name (#)' 'zREMOVE name' 'zAR cityletter'")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;List cmds2:    &lt;snow&gt;-'zSWAP name #'")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemied list:  &lt;MistyRose&gt;" .. ra.ListEnemied.."   &lt;snow&gt;-'zENEMY'")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Auto-enemy:    &lt;MistyRose&gt;" .. ra.Settings.SetEnemy.."   &lt;snow&gt;-'zAUTO'")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Call target:   &lt;MistyRose&gt;" .. tostring(ra.IsLeader):title().." &lt;snow&gt;-'zC(F)', 'zCALL(F)', 'zLOUD'")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Re-Targeting:  &lt;MistyRose&gt;" .. tostring(ra.Settings.SetTarget):title().." &lt;snow&gt;-'zA' or 'zR to room scan'")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Moved report:  &lt;MistyRose&gt;" .. tostring(ra.Settings.MoveReporting):title().." &lt;snow&gt;-'zMOVE'")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Aff reporting: &lt;MistyRose&gt;" .. tostring(ra.Settings.AffCalling):title().." &lt;snow&gt;-'zAFFS'")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Wall reporting:&lt;MistyRose&gt;" .. tostring(ra.Settings.WallCalling):title().." &lt;snow&gt;-'zWALLS'")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;City target:   &lt;MistyRose&gt;" .. ra.Settings.CityTargeting.." &lt;snow&gt;- 'zCITY name' or letter")
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" ..ra.Settings.TargetSwitch.." &lt;snow&gt;-'zT to target', 'zP to toggle setting'")
-</script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zstat2$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Status report short version</name>
-					<script>cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Raid assist", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Raid assist", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
-
-
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..ra.Leader)
--- Specific target callers commented out. target switch is in room depedent now
--- if ra.Caller ~= "" then
---cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;Target Caller  &amp;lt;dodger_blue&amp;gt;" ..ra.Caller.."&amp;lt;snow&amp;gt;- ztc 'person'")
---end
---if ra.Caller2 ~= "" then
---cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;2nd Caller     &amp;lt;dodger_blue&amp;gt;" ..ra.Caller2.."&amp;lt;snow&amp;gt;-ztc 'person' 'person2'")
---end
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(ra.target_list, ", "))
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemied list:  &lt;MistyRose&gt;" .. ra.ListEnemied)
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Auto-enemy:    &lt;MistyRose&gt;" .. ra.Settings.SetEnemy)
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Call target:   &lt;MistyRose&gt;" .. tostring(ra.IsLeader):title())
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Re-Targeting:  &lt;MistyRose&gt;" .. tostring(ra.Settings.SetTarget):title())
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Moved report:  &lt;MistyRose&gt;" .. tostring(ra.Settings.MoveReporting):title())
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Aff reporting: &lt;MistyRose&gt;" .. tostring(ra.Settings.AffCalling):title())
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Wall reporting:&lt;MistyRose&gt;" .. tostring(ra.Settings.WallCalling):title())
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;City target:   &lt;MistyRose&gt;" .. ra.Settings.CityTargeting)
-cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" .. ra.Settings.TargetSwitch)
-
-
-
-</script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zstat$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Group report</name>
-					<script>cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Raid assist", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Raid assist", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
-if ra.Leader == "Me" then
-  send("pt Leader: Atul")
-  else
-  send("pt Leader: "..ra.Leader)
-end
--- Specific target callers commented out. target switch is in room depedent now
--- if ra.Caller == "" and ra.Caller2 == "" then
-  --send("pt Follow "..ra.Leader.." targets")
-  --elseif ra.Caller ~= "" and ra.Caller2 == "" then
-  --send("pt Follow "..ra.Caller.." targets")
-  --elseif ra.Caller ~= "" and ra.Caller ~= "" then
-  --send("pt Follow "..ra.Caller.." and "..ra.Caller2.." targets")
-  --elseif ra.Leader then
-  --send("pt Follow Atul targets")
-  --else
-  --send("pt Follow "..ra.Leader.." targets")
--- end
-send("pt Targeting: "..target)
-send("pt Enemy list: "..table.concat(ra.target_list, ", "))
-send("pt Rally at "..gmcp.Room.Info.name..", in "..gmcp.Room.Info.area)
-send("pt City target: " .. ra.Settings.CityTargeting)</script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zgroup$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>Target position swap</name>
-					<script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zloud$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Target position swap</name>
+						<script>
 local name = matches[2]:lower():title() 
 local position = matches[3]
 
@@ -574,13 +589,13 @@ if not table.contains(ra.target_list, name) then
 	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;lemon_chiffon&gt; Name not found in the order.")
 end
 </script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zswap (\w+) (\d+)$</regex>
-				</Alias>
-				<Alias isActive="yes" isFolder="no">
-					<name>In room add</name>
-					<script>--Pretty straight forward- Takes the city letter or all and looks through the room for who's from their and not on the list and addes them.
+						<command></command>
+						<packageName></packageName>
+						<regex>^zswap (\w+) (\d+)$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>In room add</name>
+						<script>--Pretty straight forward- Takes the city letter or all and looks through the room for who's from their and not on the list and addes them.
 --Careful using all! Between this adding friendlies and autotarget switching- you'll start to hit friends eventually.
 
 local city
@@ -676,19 +691,19 @@ if #NewNames &gt; 0 then
 end
 
 	</script>
-					<command></command>
-					<packageName></packageName>
-					<regex>^zar ?(h|m|t|a|c|r|e|all)?$</regex>
-				</Alias>
-				<AliasGroup isActive="yes" isFolder="yes">
-					<name>Settings</name>
-					<script></script>
-					<command></command>
-					<packageName></packageName>
-					<regex></regex>
-					<Alias isActive="yes" isFolder="no">
-						<name>Type of target changing</name>
-						<script>--Whether you want the system to change targets or not
+						<command></command>
+						<packageName></packageName>
+						<regex>^zar ?(h|m|t|a|c|r|e|all)?$</regex>
+					</Alias>
+					<AliasGroup isActive="yes" isFolder="yes">
+						<name>Settings</name>
+						<script></script>
+						<command></command>
+						<packageName></packageName>
+						<regex></regex>
+						<Alias isActive="yes" isFolder="no">
+							<name>Type of target changing</name>
+							<script>--Whether you want the system to change targets or not
 --Good to set to off if the party lead is alive and calling
 --Good to set to on if they're not around- KIA or MIA
 
@@ -702,13 +717,13 @@ if ra.Settings.SetTarget == false then
 end
 
 </script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^za$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Party targeting</name>
-						<script>--If its not, allows settings changes to how party target calls are handled
+							<command></command>
+							<packageName></packageName>
+							<regex>^za$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Party targeting</name>
+							<script>--If its not, allows settings changes to how party target calls are handled
 if matches[2] == "p" then
     if ra.Settings.TargetSwitch == "auto" then
     		ra.Settings.TargetSwitch = "manual"
@@ -730,13 +745,13 @@ if matches[2] == "p" then
 		cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt; Party targeting: &lt;MistyRose&gt;" ..ra.Settings.TargetSwitch)	
 end
 </script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^z(p|pauto|pmanual)$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Auto enemy toggle</name>
-						<script>--Switch auto enemy with za or zauto
+							<command></command>
+							<packageName></packageName>
+							<regex>^z(p|pauto|pmanual)$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Auto enemy toggle</name>
+							<script>--Switch auto enemy with za or zauto
 
 if ra.Settings.SetEnemy == "Yep" then
 	ra.Settings.SetEnemy = "Nope"
@@ -746,27 +761,27 @@ if ra.Settings.SetEnemy == "Yep" then
 	cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;We &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; auto-enemy!")
 end
 </script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zauto$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Force settings save</name>
-						<script>ra.saveSettings()</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zss$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Force Load settings</name>
-						<script>ra.loadSettings()</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zls$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Toggle All Reporting</name>
-						<script>if isActive("Opponent movement", "trigger") == 0 then
+							<command></command>
+							<packageName></packageName>
+							<regex>^zauto$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Force settings save</name>
+							<script>ra.saveSettings()</script>
+							<command></command>
+							<packageName></packageName>
+							<regex>^zss$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Force Load settings</name>
+							<script>ra.loadSettings()</script>
+							<command></command>
+							<packageName></packageName>
+							<regex>^zls$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Toggle All Reporting</name>
+							<script>if isActive("Opponent movement", "trigger") == 0 then
 	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; report target movement!")
   send("pt Reporting Target Movement")
 	enableTrigger("Opponent movement")
@@ -807,13 +822,13 @@ elseif isActive("Wall Calls", "trigger") == 1 then
   ra.Settings.WallCalling = false
 
 end</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zreport$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Target movement reporting</name>
-						<script>if isActive("Opponent movement", "trigger") == 0 then
+							<command></command>
+							<packageName></packageName>
+							<regex>^zreport$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Target movement reporting</name>
+							<script>if isActive("Opponent movement", "trigger") == 0 then
 	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; report target movement!")
   send("pt Reporting Target Movement")
 	enableTrigger("Opponent movement")
@@ -826,13 +841,13 @@ elseif isActive("Opponent movement", "trigger") == 1 then
 	ra.Settings.MoveReporting = false
 
 end</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zmove$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Target aff reporting</name>
-						<script>if isActive("Aff Reporting", "trigger") == 0 then
+							<command></command>
+							<packageName></packageName>
+							<regex>^zmove$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Target aff reporting</name>
+							<script>if isActive("Aff Reporting", "trigger") == 0 then
   cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; report afflictions to party!")
   send("pt Reporting Afflictions")
   enableTrigger("Aff Reporting")
@@ -845,13 +860,13 @@ elseif isActive("Aff Reporting", "trigger") == 1 then
   ra.Settings.AffCalling = false
 
 end</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zaffs$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Wall reporting</name>
-						<script>if isActive("Wall Calls", "trigger") == 0 then
+							<command></command>
+							<packageName></packageName>
+							<regex>^zaffs$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Wall reporting</name>
+							<script>if isActive("Wall Calls", "trigger") == 0 then
 	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; report walls!")
   send("pt Reporting Walls")
 	enableTrigger("Wall Calls")
@@ -866,13 +881,13 @@ elseif isActive("Wall Calls", "trigger") == 1 then
 end
 
 </script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zwalls$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>In room city target setting</name>
-						<script>
+							<command></command>
+							<packageName></packageName>
+							<regex>^zwalls$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>In room city target setting</name>
+							<script>
 if matches[2] == nil then
 	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City capture set to: &lt;IndianRed&gt;"..ra.Settings.CityTargeting.."!")
 	return
@@ -905,27 +920,27 @@ if city == "t" or city == "targ" or city == "targossas" then
 	else
 		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City not recognized")
 end</script>
+							<command></command>
+							<packageName></packageName>
+							<regex>^zcity ?(\w+)?$</regex>
+						</Alias>
+					</AliasGroup>
+					<AliasGroup isActive="yes" isFolder="yes">
+						<name>Presets</name>
+						<script></script>
 						<command></command>
 						<packageName></packageName>
-						<regex>^zcity ?(\w+)?$</regex>
-					</Alias>
-				</AliasGroup>
-				<AliasGroup isActive="yes" isFolder="yes">
-					<name>Presets</name>
-					<script></script>
-					<command></command>
-					<packageName></packageName>
-					<regex></regex>
-					<Alias isActive="yes" isFolder="no">
-						<name>Preset delete</name>
-						<script>ra.deletepreset(matches[2])</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zdelete (.+)$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Preset lists</name>
-						<script>-- Alias for saving, loading (this is a force load attempt, should load fine starting up), and seeing/using a setlist
+						<regex></regex>
+						<Alias isActive="yes" isFolder="no">
+							<name>Preset delete</name>
+							<script>ra.deletepreset(matches[2])</script>
+							<command></command>
+							<packageName></packageName>
+							<regex>^zdelete (.+)$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Preset lists</name>
+							<script>-- Alias for saving, loading (this is a force load attempt, should load fine starting up), and seeing/using a setlist
 
 
 --save function with a name check
@@ -985,20 +1000,20 @@ end
 
 
 </script>
+							<command></command>
+							<packageName></packageName>
+							<regex>^z(save|loadsettings|set|list|load)(?| (\w+))?$</regex>
+						</Alias>
+					</AliasGroup>
+					<AliasGroup isActive="yes" isFolder="yes">
+						<name>Announce</name>
+						<script></script>
 						<command></command>
 						<packageName></packageName>
-						<regex>^z(save|loadsettings|set|list|load)(?| (\w+))?$</regex>
-					</Alias>
-				</AliasGroup>
-				<AliasGroup isActive="yes" isFolder="yes">
-					<name>Announce</name>
-					<script></script>
-					<command></command>
-					<packageName></packageName>
-					<regex></regex>
-					<Alias isActive="yes" isFolder="no">
-						<name>Target order call</name>
-						<script>--Alias to call out the target list
+						<regex></regex>
+						<Alias isActive="yes" isFolder="no">
+							<name>Target order call</name>
+							<script>--Alias to call out the target list
 --You can force call your known list on pt by adding f to overide not calling stuff 
 
 if ra.IsLeader then
@@ -1011,13 +1026,13 @@ end
 if matches[2] == "f" then
      send(string.format("pt Target order is: %s", table.concat(ra.target_list, ", ")),false)
 end</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zcall(f)?$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Call current target</name>
-						<script>-- if you're the leader, this will call the current target, good for if people as what the target is
+							<command></command>
+							<packageName></packageName>
+							<regex>^zcall(f)?$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Call current target</name>
+							<script>-- if you're the leader, this will call the current target, good for if people as what the target is
 -- Can also force announcing the target if not the leader with f modifier similar to zcall for order getServerEncodingsList
 
 if ra.IsLeader then
@@ -1029,20 +1044,20 @@ if ra.IsLeader then
 		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt; You are not the leader- add &lt;SpringGreen&gt;'f'&lt;SlateGrey&gt; to force call!")
 end
 </script>
+							<command></command>
+							<packageName></packageName>
+							<regex>^zc(f)?$</regex>
+						</Alias>
+					</AliasGroup>
+					<AliasGroup isActive="yes" isFolder="yes">
+						<name>Reseting</name>
+						<script></script>
 						<command></command>
 						<packageName></packageName>
-						<regex>^zc(f)?$</regex>
-					</Alias>
-				</AliasGroup>
-				<AliasGroup isActive="yes" isFolder="yes">
-					<name>Reseting</name>
-					<script></script>
-					<command></command>
-					<packageName></packageName>
-					<regex></regex>
-					<Alias isActive="yes" isFolder="no">
-						<name>Reset targets and callers</name>
-						<script>--Clears the list of targets
+						<regex></regex>
+						<Alias isActive="yes" isFolder="no">
+							<name>Reset targets and callers</name>
+							<script>--Clears the list of targets
 ra.target_list = {}
 
 if ra.Settings.SetEnemy == "Yep" then
@@ -1061,20 +1076,21 @@ ra.ToTarget = "none"
 cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;yellow&gt; All leaders and targets cleared!")
 disableTrigger("Room gag")
 enableTrigger("Stop (Room gag)")</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zreset$</regex>
-					</Alias>
-					<Alias isActive="yes" isFolder="no">
-						<name>Reset Room triggers</name>
-						<script>-- This alias resets the room QL gaging triggers 
+							<command></command>
+							<packageName></packageName>
+							<regex>^zreset$</regex>
+						</Alias>
+						<Alias isActive="yes" isFolder="no">
+							<name>Reset Room triggers</name>
+							<script>-- This alias resets the room QL gaging triggers 
 disableTrigger("Room gag")
 enableTrigger("Stop (Room gag)")
 cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt; Reset Room gag")</script>
-						<command></command>
-						<packageName></packageName>
-						<regex>^zre$</regex>
-					</Alias>
+							<command></command>
+							<packageName></packageName>
+							<regex>^zre$</regex>
+						</Alias>
+					</AliasGroup>
 				</AliasGroup>
 			</AliasGroup>
 		</AliasGroup>
