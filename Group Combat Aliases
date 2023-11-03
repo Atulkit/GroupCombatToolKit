@@ -1,0 +1,1124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<AliasPackage>
+		<AliasGroup isActive="yes" isFolder="yes">
+			<name>Group Combat Aliases</name>
+			<script></script>
+			<command></command>
+			<packageName>Group Combat Aliases</packageName>
+			<regex></regex>
+			<AliasGroup isActive="yes" isFolder="yes">
+				<name>Group Combat</name>
+				<script></script>
+				<command></command>
+				<packageName></packageName>
+				<regex></regex>
+				<AliasGroup isActive="yes" isFolder="yes">
+					<name>Targeting</name>
+					<script></script>
+					<command></command>
+					<packageName></packageName>
+					<regex></regex>
+					<Alias isActive="no" isFolder="no">
+						<name>targeting alias</name>
+						<script>targeting(matches[2])
+
+--If your targetting errors, try setting ak.highlighttarget to false</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^t (.+)$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Quick target change</name>
+						<script>--Set of if statements to check what type of switch is wanted
+
+if matches[2] == "n" then
+		--Next in line to die
+    local position = table.index_of(gc.target_list, target)
+    if position == nil then											--Need this check incase your target was not on the list
+				target = gc.target_list[1]
+    	elseif position == #gc.target_list then
+    		target = gc.target_list[1]
+    	else
+    		target = gc.target_list[position+1]
+    end
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Next target: &lt;IndianRed&gt;" ..target)
+		
+	elseif matches[2] == "f" then
+		--Lets hit number one again
+		target = gc.target_list[1]
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Next target: &lt;IndianRed&gt;" ..target)
+		
+	elseif matches[2] == "t" then
+		target = gc.ToTarget
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;black:white&gt;-----Swapped to party target!-----")
+		
+	else
+		--Take your pick of who gets it!
+		target = gc.target_list[tonumber(matches[2])]
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Next target: &lt;IndianRed&gt;" ..target)
+end
+--send("settarget "..target, false)
+targeting(target)
+
+
+gc.announcer("Single")
+raiseEvent("GC Target Changed")</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^z(t|n|f|(\d+))$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Partial name targeting</name>
+						<script>-- Uses target order and allows retargeting with first couple letters
+local person = matches[2]:lower():title()
+local found = false
+
+
+if table.contains(gc.target_list, person) then 	-- exact match targets
+			target = person
+			gc.announcer("Single")
+			raiseEvent("GC Target Changed")
+			found = true
+			cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;lemon_chiffon&gt; Found/targeted &lt;IndianRed&gt;"..target)
+			
+ 	elseif found == false then -- Search target list for a partial match
+		for _, v in pairs(gc.target_list) do
+			if string.starts(v, person) then
+				target = v
+				cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;lemon_chiffon&gt; Found/targeted &lt;IndianRed&gt;"..target)
+				gc.announcer("Single")
+				raiseEvent("GC Target Changed")
+				found = true
+				break
+			end
+		end
+end
+send("settarget "..target, false)
+
+--If no match, let you know it didn't find one 
+if found == false then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;lemon_chiffon&gt; Didn't match anyone.")
+end</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zt (\w+)$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Room targeting</name>
+						<script>--Use zr or zrt to check all in room and look at target list to target highest priority person
+
+enableTrigger("Stop (Room gag)")
+enableTrigger("Room gag")
+send("ql",false)</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zrt?$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>In room add</name>
+						<script>--Pretty straight forward- Takes the city letter or all and looks through the room for who's from their and not on the list and addes them.
+--Careful using all! Between this adding friendlies and autotarget switching- you'll start to hit friends eventually.
+
+local city
+
+
+if matches[2] == "all" then
+	local NewNames = {}
+	for _,v in pairs(gc.InRoom) do
+		if not table.contains(gc.target_list, v) then
+				table.insert(gc.target_list, v)
+				table.insert(NewNames, v)
+		end
+	end
+	if #NewNames &gt; 0 then
+			cecho("\n\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;-Careful! Adding the whole room! Added Targets: &lt;lemon_chiffon&gt;"..table.concat(NewNames, ", "))
+		else
+			cecho("\n\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;-No new targets found-")
+	end
+	return
+end
+
+if not ndb then --If you set up your own Name data base in the below script delete this check.
+	cecho("\n\n&lt;OrangeRed&gt;(CombAtul):&lt;lemon_chiffon&gt;====No Name Database--Need to set this up to work====")
+	return
+end
+
+if matches[2] == nil then
+	if gc.Settings.CityTargeting == "none" then
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt; No city set")
+		return
+	else
+		local NewNames = {}
+		city = gc.Settings.CityTargeting
+    for _,v in pairs(gc.InRoom) do
+    	if not table.contains(gc.target_list, v) then
+    		if ndb.getcity(v) == city then
+    			table.insert(gc.target_list, v)
+    			table.insert(NewNames, v)
+    		end
+    	end
+    end
+    if #NewNames &gt; 0 then
+    		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Added these "..city.." Targets: &lt;lemon_chiffon&gt;"..table.concat(NewNames, ", "))
+				
+				if gc.Settings.SetEnemy == "Yep" then
+  				for _,v in pairs (NewNames) do	--Enemy the new people if you have auto enemy going.													
+  					send("Enemy "..v,false)
+  				end
+				end	
+    	else
+    		cecho("\n\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;-No new targets found from "..city.."-")
+    end
+		return
+	end
+end
+
+
+if matches[2] == "h" then
+		city = "Hashan"
+	elseif matches[2] == "m" then
+		city = "Mhaldor"
+	elseif matches[2] == "t" then
+		city = "Targossas"
+	elseif matches[2] == "a" then
+		city = "Ashtan"
+	elseif matches[2] == "c" then
+		city = "Cyrene"
+	elseif matches[2] == "e" then
+		city = "Eleusis"
+	elseif matches[2] == "r" then
+		city = "Rogue"
+end
+	
+local NewNames = {}
+for _,v in pairs(gc.InRoom) do
+	if not table.contains(gc.target_list, v) then
+		if ndb.getcity(v) == city then
+			table.insert(gc.target_list, v)
+			table.insert(NewNames, v)
+		end
+	end
+end
+
+if #NewNames &gt; 0 then
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Added these "..city.." Targets: &lt;lemon_chiffon&gt;"..table.concat(NewNames, ", "))
+		if gc.Settings.SetEnemy == "Yep" then
+  			for _,v in pairs (NewNames) do	--Enemy the new people if you have auto enemy going.													
+  				send("Enemy "..v,false)
+  			end
+		end	
+	else
+		cecho("\n\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;-No new targets found from "..city.."-")
+end
+
+	</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zar ?(h|m|t|a|c|r|e|all)?$</regex>
+					</Alias>
+				</AliasGroup>
+				<AliasGroup isActive="no" isFolder="yes">
+					<name>Bombs</name>
+					<script></script>
+					<command></command>
+					<packageName></packageName>
+					<regex></regex>
+					<Alias isActive="yes" isFolder="no">
+						<name>Throw Bombs</name>
+						<script>bombs = {
+  c = {bombtype = "concussion bomb"},
+  w = {bombtype = "web bomb"},
+  d = {bombtype = "dust bomb"},
+  b = {bombtype = "butterfly bomb"},
+}
+
+bomb = bombs[matches[2]]
+
+--bomb ground 
+if matches[3] == "g" then
+  send("setalias b1 get "..bomb.bombtype.." from bag/wield "..bomb.bombtype.." right/throw bomb at ground/unwield bomb/wield shield")
+  send("queue addclear eqbal b1")
+  --send("pt Threw "..bomb.bombtype.." at ground")
+  
+--bomb in a direction
+  else
+  send("setalias b1 get "..bomb.bombtype.." from bag/wield "..bomb.bombtype.." right/throw bomb "..matches[3].."/unwield bomb/wield shield")
+  send("queue addclear eqbal b1")
+  --send("pt Threw "..bomb.bombtype.." "..matches[3])
+end</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^b(c|w|d|b) (.+)$</regex>
+					</Alias>
+				</AliasGroup>
+				<Alias isActive="yes" isFolder="no">
+					<name>Group Combat on off</name>
+					<script>if matches[2] == "on" then
+	enableTrigger("Group Combat")
+  --RelayAffs = true
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;On &lt;SlateGrey&gt;and ready!")
+  cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;snow&gt;zHELP for help and zSTAT to see system status")
+  
+
+elseif matches[2] == "off" then
+	disableTrigger("Group Combat")
+  --RelayAffs = false
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;IndianRed&gt;Off &lt;SlateGrey&gt;and waiting!")
+end</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^z(on|off)$</regex>
+				</Alias>
+				<Alias isActive="yes" isFolder="no">
+					<name>Add enemy</name>
+					<script>--Alias to add enemies to the list, and will try to spellcheck with Name database
+
+local new_enemy = matches[2]:lower():title()
+local position = matches[3] or #gc.target_list
+
+
+--NDB check to use it check spelling of targets
+
+
+if not ndb then
+	if not table.contains(gc.target_list, new_enemy) then
+		if position &lt; #gc.target_list then
+			table.insert(gc.target_list, position, new_enemy)
+		else
+			table.insert(gc.target_list, new_enemy)
+		end
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt;Target order is: &lt;light_blue&gt;"..table.concat(gc.target_list, ", "))
+		gc.autoEnemy(new_enemy)
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt;Target is already in the order")
+	end
+		
+	
+	--If NDB exists, checks for the persons name
+elseif ndb.isperson(new_enemy) then
+	if not table.contains(gc.target_list, new_enemy) then
+		if tonumber(position) &lt; #gc.target_list then
+			cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;IndianRed&gt;"..new_enemy.." &lt;SlateGrey&gt;sloted at- &lt;cyan&gt;"..position)
+			table.insert(gc.target_list, position, new_enemy)
+		else
+			table.insert(gc.target_list, new_enemy)
+		end
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Target order is: &lt;lemon_chiffon&gt;"..table.concat(gc.target_list, ", "))
+		
+		--Attempt to enemy them or reminder
+		gc.autoEnemy(new_enemy)
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt;Target is already in the order")
+	end
+		
+	else
+		--If NDB doesn't find them, reports. If they are for sure a person, honors them
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;light_blue&gt; NDB doesn't recognize that name")
+end
+
+
+
+</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^zadd (\w+) ?(\d+)?$</regex>
+				</Alias>
+				<Alias isActive="yes" isFolder="no">
+					<name>Add multiple names</name>
+					<script>--Takes multiple names in to add 
+--Yes, I agree, this pattern is a little rediculous! Basically it forces entering names with or without comma and won't allow mixing!
+--Splits the name up by ,(space) or just spaces if those are used instead
+--Runs through the list checking if they are on the targetlist already to skip, and also attempted to enemy
+
+
+
+local NameList = matches[2]
+
+if NameList:find(",") then															--This figures out the type of split to run
+	NameList = string.split(NameList, ", ")
+	else
+	NameList = string.split(NameList, " ")
+end
+
+
+
+for n, v in pairs (NameList) do													--This sends the list into the target order and enemies them if its on
+	if not table.contains(gc.target_list, v:title()) then
+		table.insert(gc.target_list, v:title())
+		gc.autoEnemy(v:title())	
+	end
+end
+
+cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Added: &lt;IndianRed&gt;" ..table.concat(NameList, ", "))	--Informs the list was recognized
+
+
+
+
+
+</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^zmulti ((((\w+)\, )+(\w+))|(((\w+)\ )+(\w+)))$</regex>
+				</Alias>
+				<Alias isActive="yes" isFolder="no">
+					<name>Remove enemy</name>
+					<script>local new_enemy = matches[2]:title()
+ 
+--Remove from the target list
+table.remove(gc.target_list, table.index_of(gc.target_list, new_enemy))
+
+--Display current target list
+cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Target order is: &lt;lemon_chiffon&gt;"..table.concat(gc.target_list, ", "))
+
+--attempt to unenemy them or reminder
+gc.autoUnenemy(new_enemy)
+
+</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^zremove (\w+)$</regex>
+				</Alias>
+				<Alias isActive="yes" isFolder="no">
+					<name>Enemy the list</name>
+					<script>--Functions to set the target list to be your enemies
+
+cecho("&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt; Setting enemies to target list!")
+
+send("Unenemy all", false)																			--If you'd rather only unenemy when its a long list, comment out this and activate the if below, set the number							
+--if #gc.target_list &gt; 5 then send("Unenemy all", false) end
+
+for _,v in pairs (gc.target_list) do														--Run a loop over the target list to enemy everyone
+	send("Enemy "..v,false)
+end
+
+
+gc.ListEnemied = "Yep"																					--For status report- enemies have been set</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^zenemy$</regex>
+				</Alias>
+				<Alias isActive="yes" isFolder="no">
+					<name>Reorder enemies</name>
+					<script>gc.order_report()</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^zorder$</regex>
+				</Alias>
+				<Alias isActive="yes" isFolder="no">
+					<name>Raid leader set</name>
+					<script>--Set the leader calling the target list and calling target changes
+
+
+-- if gc.Leader == "Me" or gc.Leader == "Atul" then
+	-- gc.IsLeader = true
+-- else
+	-- gc.IsLeader = false
+-- end
+-- else
+
+gc.Leader = matches[2]:title()
+cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;red&gt; Group leader changed to: &lt;yellow&gt;".. gc.Leader)
+if matches[2]:title() == "Me" then
+  	gc.IsLeader = true
+else
+	gc.IsLeader = false
+end
+--end
+
+
+</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^zl (\w+)$</regex>
+				</Alias>
+				<Alias isActive="no" isFolder="no">
+					<name>Target callers</name>
+					<script>--set this only if the leader(s) are not the primary target callers
+-- Specific target callers commented out. target switch is in room depedent now
+-- KEEP THIS DISABLED
+local person = matches[2]:title()
+if matches[3] then
+  person2 = matches[3]:title()
+else end
+
+
+if person == "None" or person == "Clear" then
+    gc.Caller = ""
+    cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;red&gt; No secondary target calling")
+  elseif person ~= gc.Leader then
+		gc.Caller = person
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;red&gt; Target caller is: &lt;yellow&gt;".. gc.Caller)
+end
+
+if person2 == "None" or person2 == "Clear" then
+    gc.Caller2 = ""
+    cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;red&gt; No secondary target calling")
+	elseif person2 ~= gc.Leader or person2 ~= gc.Caller then
+		gc.Caller2 = person2
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;red&gt; Secondary target caller is: &lt;yellow&gt;".. gc.Caller2)
+end
+</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^ztc (\w+) ?(\w+)?$</regex>
+				</Alias>
+				<AliasGroup isActive="yes" isFolder="yes">
+					<name>Help</name>
+					<script></script>
+					<command></command>
+					<packageName></packageName>
+					<regex></regex>
+					<Alias isActive="yes" isFolder="no">
+						<name>Full help</name>
+						<script>cecho("\n&lt;OrangeRed&gt;---Party combat system commands: Full---")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zON,OFF&lt;light_blue&gt;-Raid system all on or off")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSTAT&lt;light_blue&gt;-Raid system info")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zL &lt;name or 'Me'&gt;&lt;light_blue&gt;-Set leader")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zL2 &lt;name&gt; &lt;light_blue&gt;-Set leader")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zORDER&lt;light_blue&gt;-List target order for reordering")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zCALL(F)&lt;light_blue&gt;-Call target order, F forces announce")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zC(F)&lt;light_blue&gt;-Call current target, F forces announce")
+--cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zTC &lt;name&gt; &lt;name, if needed&gt; &lt;light_blue&gt;-Set specific target callers (1 or 2) if not leaders")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zGROUP &lt;light_blue&gt;-Report leaders, target, target list, callers, and more to party")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zADD name (#)&lt;light_blue&gt;-Add enemy to list at end or into a spot")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zMULTI name, name, name, ect&lt;light_blue&gt;-Add several enemies at once")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zREMOVE name&lt;light_blue&gt;-Remove enemy from list")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSWAP &lt;name&gt; &lt;#&gt;&lt;light_blue&gt;-Manual reordering person to a position")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zENEMY&lt;light_blue&gt;-Enemies the target list")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zAUTO&lt;light_blue&gt;-Enable setting enemies automatically")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zA&lt;light_blue&gt;-Turn on target switching if your target dies!")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zN,zF,z#&lt;light_blue&gt;-Next, First, Position target")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zT &lt;partial name&gt;&lt;light_blue&gt;-Target with only first few letters")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zP,zPAUTO/MANUAL&lt;light_blue&gt;-Setting for party leader target switching")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zT&lt;light_blue&gt;-Manual target last leader target call")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zR&lt;light_blue&gt;-Check the room for the highest ordered target and target them")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zLOUD&lt;light_blue&gt;-Make yourself call as if you were leader but not set to lead")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zBW &lt;city letter&gt;&lt;light_blue&gt;- Add complete city to target order")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zAR (h|m|t|a|c|e|r|all)&lt;light_blue&gt;-Adds new people in room from that city to list")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zRESET&lt;light_blue&gt;-Empty target list")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zREPORT&lt;light_blue&gt;-Toggle reporting on/off for movement, affliction, and walls at once")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zMOVE&lt;light_blue&gt;-Toggle highlighting target movement")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zAFFS&lt;light_blue&gt;-Toggle reporting target afflictions")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zWALLS&lt;light_blue&gt;-Toggle reporting walls")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zCITY&lt;light_blue&gt;-Change default city to add room targets from")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zLIST&lt;light_blue&gt;-Display saved lists to use")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zDELETE name&lt;light_blue&gt;-Delete a preset")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSAVE name&lt;light_blue&gt;-Save target order for future")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zLOAD name&lt;light_blue&gt;-Load only those in realms into order")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSET name&lt;light_blue&gt;-Replicate saved target order")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSS&lt;light_blue&gt;-Force save settings")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zLS&lt;light_blue&gt;-Force load settings")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zRE&lt;light_blue&gt;-Reset QL room gag without clearing target order")</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zhelp2$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Help</name>
+						<script>cecho("\n&lt;OrangeRed&gt;---Party combat commands: Basic---")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zON,OFF&lt;light_blue&gt;-Raid system all on or off")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSTAT&lt;light_blue&gt;-Raid system info")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zL me or name&lt;light_blue&gt;-Set leader")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zORDER&lt;light_blue&gt;-List target order for reordering")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zCALL(F)&lt;light_blue&gt;-Call target order, F forces announce")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zC(F)&lt;light_blue&gt;-Call current target, F forces announce")
+--cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zTC &lt;name&gt; &lt;name, if needed&gt; &lt;light_blue&gt;-Set specific target callers (1 or 2) if not leaders")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zGROUP &lt;light_blue&gt;-Report leaders, target, target list, callers, and more to party")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zADD name (#)&lt;light_blue&gt;-Add enemy to list at end or into a spot")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zMULTI name, name, name, ect&lt;light_blue&gt;-Add several enemies at once")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zREMOVE name&lt;light_blue&gt;-Remove enemy from list")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zSWAP &lt;name&gt; &lt;#&gt;&lt;light_blue&gt;-Manual reordering person to a position")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zENEMY&lt;light_blue&gt;-Enemies the target list")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zAUTO&lt;light_blue&gt;-Enable setting enemies automatically")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zA&lt;light_blue&gt;-Turn on target switching if your target dies!")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zN,zF,z#&lt;light_blue&gt;-Next, First, Position target")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zT &lt;partial name&gt;&lt;light_blue&gt;-Target with only first few letters")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zP,zPAUTO/MANUAL&lt;light_blue&gt;-Setting for party leader target switching")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zT&lt;light_blue&gt;-Manual target last leader target call")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zR&lt;light_blue&gt;-Check the room for the highest ordered target and target them")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zLOUD&lt;light_blue&gt;-Make yourself call as if you were leader but not set to lead")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zBW &lt;city letter&gt;&lt;light_blue&gt;- Add complete city to target order")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zAR (h|m|t|a|c|e|r|all)&lt;light_blue&gt;-Adds new people in room from that city to list")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zLOUD&lt;light_blue&gt;-Make yourself call as if you were leader but not set to lead")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zRESET&lt;light_blue&gt;-Empty target list")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zREPORT&lt;light_blue&gt;-Toggle reporting on/off for movement, affliction, and walls at once")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zMOVE&lt;light_blue&gt;-Toggle highlighting target movement")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zAFFS&lt;light_blue&gt;-Toggle reporting target afflictions")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zWALLS&lt;light_blue&gt;-Toggle reporting walls")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zCITY (letter or name)&lt;light_blue&gt;-Change default city to new add room targets from")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;zHELP2&lt;light_blue&gt;-Full help list")</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zhelp$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Status report with commands</name>
+						<script>cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Group Combat", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Group Combat", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
+cecho("&lt;snow&gt;-'zON/zOFF'")
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..gc.Leader.." &lt;snow&gt;-'zL'") 
+-- Specific target callers commented out. target switch is in room depedent now
+-- if gc.Caller ~= "" then
+--cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;Target Caller  &amp;lt;dodger_blue&amp;gt;" ..gc.Caller.."&amp;lt;snow&amp;gt;- ztc 'person'")
+--end
+--if gc.Caller2 ~= "" then
+--cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;2nd Caller     &amp;lt;dodger_blue&amp;gt;" ..gc.Caller2.."&amp;lt;snow&amp;gt;-ztc 'person' 'person2'")
+--end
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(gc.target_list, ", ").." &lt;snow&gt;- zEnemy")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;List cmds:     &lt;snow&gt;-'zORDER' 'zAdd name (#)' 'zREMOVE name' 'zAR cityletter'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;List cmds2:    &lt;snow&gt;-'zSWAP name #'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemied list:  &lt;MistyRose&gt;" .. gc.ListEnemied.."   &lt;snow&gt;-'zENEMY'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Auto-enemy:    &lt;MistyRose&gt;" .. gc.Settings.SetEnemy.."   &lt;snow&gt;-'zAUTO'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Call target:   &lt;MistyRose&gt;" .. tostring(gc.IsLeader):title().." &lt;snow&gt;-'zC(F)', 'zCALL(F)', 'zLOUD'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Re-Targeting:  &lt;MistyRose&gt;" .. tostring(gc.Settings.SetTarget):title().." &lt;snow&gt;-'zA' or 'zR to room scan'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Moved report:  &lt;MistyRose&gt;" .. tostring(gc.Settings.MoveReporting):title().." &lt;snow&gt;-'zMOVE'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Aff reporting: &lt;MistyRose&gt;" .. tostring(gc.Settings.AffCalling):title().." &lt;snow&gt;-'zAFFS'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Wall reporting:&lt;MistyRose&gt;" .. tostring(gc.Settings.WallCalling):title().." &lt;snow&gt;-'zWALLS'")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;City target:   &lt;MistyRose&gt;" .. gc.Settings.CityTargeting.." &lt;snow&gt;- 'zCITY name' or letter")
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" ..gc.Settings.TargetSwitch.." &lt;snow&gt;-'zT to target', 'zP to toggle setting'")
+</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zstat2$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Status report short version</name>
+						<script>combatstatus()
+
+-- This has all been converted into clickable links. zSTAT2 will give the non link version.
+
+-- cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Group Combat", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Group Combat", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
+-- 
+-- 
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..gc.Leader)
+-- -- Specific target callers commented out. target switch is in room depedent now
+-- -- if gc.Caller ~= "" then
+-- --cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;Target Caller  &amp;lt;dodger_blue&amp;gt;" ..gc.Caller.."&amp;lt;snow&amp;gt;- ztc 'person'")
+-- --end
+-- --if gc.Caller2 ~= "" then
+-- --cecho("\n&amp;lt;light_blue&amp;gt;-&amp;lt;yellow&amp;gt;2nd Caller     &amp;lt;dodger_blue&amp;gt;" ..gc.Caller2.."&amp;lt;snow&amp;gt;-ztc 'person' 'person2'")
+-- --end
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(gc.target_list, ", "))
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemied list:  &lt;MistyRose&gt;" .. gc.ListEnemied)
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Auto-enemy:    &lt;MistyRose&gt;" .. gc.Settings.SetEnemy)
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Call target:   &lt;MistyRose&gt;" .. tostring(gc.IsLeader):title())
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Re-Targeting:  &lt;MistyRose&gt;" .. tostring(gc.Settings.SetTarget):title())
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Moved report:  &lt;MistyRose&gt;" .. tostring(gc.Settings.MoveReporting):title())
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Aff reporting: &lt;MistyRose&gt;" .. tostring(gc.Settings.AffCalling):title())
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Wall reporting:&lt;MistyRose&gt;" .. tostring(gc.Settings.WallCalling):title())
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;City target:   &lt;MistyRose&gt;" .. gc.Settings.CityTargeting)
+-- cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  &lt;SlateGrey&gt;" .. gc.Settings.TargetSwitch)
+
+
+
+</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zstat$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Group report</name>
+						<script>cecho("\n&lt;OrangeRed&gt;---Party combat system status:") if isActive("Group Combat", "trigger") == 1 then cecho("&lt;OrangeRed&gt;(On)") elseif isActive("Group Combat", "trigger") == 0 then cecho("&lt;IndianRed&gt;(OFF!)")end
+if gc.Leader == "Me" then
+  send("pt Leader: Atul")
+  else
+  send("pt Leader: "..gc.Leader)
+end
+send("pt Targeting: "..target)
+send("pt Enemy list: "..table.concat(gc.target_list, ", "))
+send("pt Rally at "..gmcp.Room.Info.name..", in "..gmcp.Room.Info.area)
+send("pt City target: " .. gc.Settings.CityTargeting)</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zgroup$</regex>
+					</Alias>
+				</AliasGroup>
+				<Alias isActive="yes" isFolder="no">
+					<name>City target adding</name>
+					<script>--This takes a few different forms of a city name and uses bw to make a target order 
+--Before sending the bw text it opens the trigger gate called BW capture 
+
+local city = matches[2]:lower()
+
+if city == "t" or city == "targ" or city == "targossas" then
+    enableTrigger("BW capture")
+    cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Adding &lt;SpringGreen&gt;Targossas")
+    send("bw targossas", false)
+	elseif city == "h" or city == "hash" or city == "hashan" then
+		enableTrigger("BW capture")
+    cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Adding &lt;brown&gt;Hashan")
+    send("bw hashan", false)
+	elseif city == "e" or city == "eles" or city == "eleusis" then
+		enableTrigger("BW capture")
+    cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Adding &lt;SpringGreen&gt;Eleusis")
+    send("bw Eleusis", false)
+	elseif city == "c" or city == "cyr" or city == "cyrene" then
+		enableTrigger("BW capture")
+    cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Adding &lt;sky_blue&gt;Cyrene")
+    send("bw cyrene", false)
+	elseif city == "a" or city == "ash" or city == "ashtan" then
+		enableTrigger("BW capture")
+    cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Adding &lt;orange&gt;Ashtan")
+    send("bw ashtan", false)
+	elseif city == "m" or city == "mhal" or city == "mhaldor" then
+		enableTrigger("BW capture")
+    cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Adding &lt;firebrick&gt;Mhaldor")
+    send("bw mhaldor", false)
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City not recognized")
+end
+
+</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^zbw (\w+)$</regex>
+				</Alias>
+				<Alias isActive="yes" isFolder="no">
+					<name>Call regardless of leading</name>
+					<script>--Overrides allowing to call out target changes (and list order) as if you are the leader- good to have a few people with this on
+if gc.Leader ~= "Me" then
+  if gc.IsLeader == false then
+    	gc.IsLeader = true
+    	gc.Settings.OverRide = true
+    	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;IndianRed&gt;WILL &lt;lemon_chiffon&gt; always call targets!")
+  elseif gc.IsLeader == true then
+    	gc.IsLeader = false
+    	gc.Settings.OverRide = false
+    	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;WON't always call targets!")
+	end
+	elseif gc.Leader == "Me" then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;lemon_chiffon&gt;YOU are the &lt;SpringGreen&gt;Leader&lt;lemon_chiffon&gt;, don't worry about this!")	
+end
+</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^zloud$</regex>
+				</Alias>
+				<Alias isActive="yes" isFolder="no">
+					<name>Target position swap</name>
+					<script>
+local name = matches[2]:lower():title() 
+local position = matches[3]
+
+if table.contains(gc.target_list, name) and tonumber(position) &lt; #gc.target_list then 
+  table.remove(gc.target_list, table.index_of(gc.target_list, name)) 
+  table.insert(gc.target_list, position, name)
+	cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;lemon_chiffon&gt; Moved: " ..name.. " to #"..position)
+end
+
+if #gc.target_list &lt; tonumber(position) then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;lemon_chiffon&gt;Order isn’t that long.")
+end
+
+if not table.contains(gc.target_list, name) then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;lemon_chiffon&gt; Name not found in the order.")
+end
+</script>
+					<command></command>
+					<packageName></packageName>
+					<regex>^zswap (\w+) (\d+)$</regex>
+				</Alias>
+				<AliasGroup isActive="yes" isFolder="yes">
+					<name>Settings</name>
+					<script></script>
+					<command></command>
+					<packageName></packageName>
+					<regex></regex>
+					<Alias isActive="yes" isFolder="no">
+						<name>Type of target changing</name>
+						<script>--Whether you want the system to change targets or not
+--Good to set to off if the party lead is alive and calling
+--Good to set to on if they're not around- KIA or MIA
+
+
+if gc.Settings.SetTarget == false then
+    	gc.Settings.SetTarget = true
+    	cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;We &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; handle changing targets!")
+	else
+    	gc.Settings.SetTarget = false
+    	cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;We &lt;IndianRed&gt;WON'T&lt;SlateGrey&gt; handle changing targets!")
+end
+
+</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^za$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Party targeting</name>
+						<script>--If its not, allows settings changes to how party target calls are handled
+if matches[2] == "p" then
+    if gc.Settings.TargetSwitch == "auto" then
+    		gc.Settings.TargetSwitch = "manual"
+				cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt; Party targeting: &lt;MistyRose&gt;" ..gc.Settings.TargetSwitch)
+    	elseif gc.Settings.TargetSwitch == "manual" then
+    		gc.Settings.TargetSwitch = "auto"
+				cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt; Party targeting: &lt;SpringGreen&gt;" ..gc.Settings.TargetSwitch)
+    	else
+    		gc.Settings.TargetSwitch = "manual"
+				cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt; Party targeting: &lt;MistyRose&gt;" ..gc.Settings.TargetSwitch)
+    end
+		
+	elseif matches[2] == "pauto" then
+		gc.Settings.TargetSwitch = "auto"
+		cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt; Party targeting: &lt;SpringGreen&gt;" ..gc.Settings.TargetSwitch)
+		
+	elseif matches[2] == "pmanual" then
+		gc.Settings.TargetSwitch = "manual"
+		cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt; Party targeting: &lt;MistyRose&gt;" ..gc.Settings.TargetSwitch)	
+end
+</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^z(p|pauto|pmanual)$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Auto enemy toggle</name>
+						<script>--Switch auto enemy with za or zauto
+
+if gc.Settings.SetEnemy == "Yep" then
+	gc.Settings.SetEnemy = "Nope"
+	cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;We &lt;IndianRed&gt;WON'T&lt;SlateGrey&gt; auto-enemy!")
+	else
+	gc.Settings.SetEnemy = "Yep"
+	cecho("&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;We &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; auto-enemy!")
+end
+</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zauto$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Force settings save</name>
+						<script>gc.saveSettings()</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zss$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Force Load settings</name>
+						<script>gc.loadSettings()</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zls$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Toggle All Reporting</name>
+						<script>if isActive("Opponent movement", "trigger") == 0 then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; report target movement!")
+  send("pt Reporting Target Movement")
+	enableTrigger("Opponent movement")
+	gc.Settings.MoveReporting = true
+
+elseif isActive("Opponent movement", "trigger") == 1 then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;IndianRed&gt;WON'T&lt;SlateGrey&gt; report target movement!")
+  send("pt No Longer Reporting Target Movement")
+	disableTrigger("Opponent movement")
+	gc.Settings.MoveReporting = false
+
+end
+
+if isActive("Aff Reporting", "trigger") == 0 then
+  cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; report afflictions to party!")
+  send("pt Reporting Afflictions")
+  enableTrigger("Aff Reporting")
+  gc.Settings.AffCalling = true
+
+elseif isActive("Aff Reporting", "trigger") == 1 then
+  cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;IndianRed&gt;WON'T&lt;SlateGrey&gt; report afflictions to party!")
+  send("pt No Longer Reporting Afflictions")
+  disableTrigger("Aff Reporting")
+  gc.Settings.AffCalling = false
+
+end
+
+if isActive("Wall Calls", "trigger") == 0 then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; report walls!")
+  send("pt Reporting Walls")
+	enableTrigger("Wall Calls")
+  gc.Settings.WallCalling = true
+
+elseif isActive("Wall Calls", "trigger") == 1 then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;IndianRed&gt;WON'T&lt;SlateGrey&gt; report walls!")
+  send("pt No Longer Reporting Walls")
+  disableTrigger("Wall Calls")
+  gc.Settings.WallCalling = false
+
+end</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zreport$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Target movement reporting</name>
+						<script>if isActive("Opponent movement", "trigger") == 0 then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; report target movement!")
+  send("pt Reporting Target Movement")
+	enableTrigger("Opponent movement")
+	gc.Settings.MoveReporting = true
+
+elseif isActive("Opponent movement", "trigger") == 1 then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;IndianRed&gt;WON'T&lt;SlateGrey&gt; report target movement!")
+  send("pt No Longer Reporting Target Movement")
+	disableTrigger("Opponent movement")
+	gc.Settings.MoveReporting = false
+
+end</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zmove$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Target aff reporting</name>
+						<script>if isActive("Aff Reporting", "trigger") == 0 then
+  cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; report afflictions to party!")
+  send("pt Reporting Afflictions")
+  enableTrigger("Aff Reporting")
+  gc.Settings.AffCalling = true
+
+elseif isActive("Aff Reporting", "trigger") == 1 then
+  cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;IndianRed&gt;WON'T&lt;SlateGrey&gt; report afflictions to party!")
+  send("pt No Longer Reporting Afflictions")
+  disableTrigger("Aff Reporting")
+  gc.Settings.AffCalling = false
+
+end</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zaffs$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Wall reporting</name>
+						<script>if isActive("Wall Calls", "trigger") == 0 then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;WILL&lt;SlateGrey&gt; report walls!")
+  send("pt Reporting Walls")
+	enableTrigger("Wall Calls")
+  gc.Settings.WallCalling = true
+
+elseif isActive("Wall Calls", "trigger") == 1 then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;IndianRed&gt;WON'T&lt;SlateGrey&gt; report walls!")
+  send("pt No Longer Reporting Walls")
+  disableTrigger("Wall Calls")
+  gc.Settings.WallCalling = false
+
+end
+
+</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zwalls$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>In room city target setting</name>
+						<script>
+if matches[2] == nil then
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City capture set to: &lt;IndianRed&gt;"..gc.Settings.CityTargeting.."!")
+	return
+end
+
+local city = matches[2]:lower()
+
+
+if city == "t" or city == "targ" or city == "targossas" then
+		gc.Settings.CityTargeting = "Targossas" 
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City capture set to: &lt;IndianRed&gt;Targossas!")
+	elseif city == "h" or city == "hash" or city == "hashan" then
+		gc.Settings.CityTargeting = "Hashan" 
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City capture set to: &lt;IndianRed&gt;Hashan!")
+	elseif city == "e" or city == "eles" or city == "eleusis" then
+		gc.Settings.CityTargeting = "Eleusis"
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City capture set to: &lt;IndianRed&gt;Eleusis!")
+	elseif city == "c" or city == "cyr" or city == "cyrene" then
+		gc.Settings.CityTargeting = "Cyrene"
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City capture set to: &lt;IndianRed&gt;Cyrene!")
+	elseif city == "a" or city == "ash" or city == "ashtan" then
+		gc.Settings.CityTargeting = "Ashtan"
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City capture set to: &lt;IndianRed&gt;Ashtan!")
+	elseif city == "m" or city == "mhal" or city == "mhaldor" then
+		gc.Settings.CityTargeting = "Mhaldor"
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City capture set to: &lt;IndianRed&gt;Mhaldor!")
+  elseif city == "none" or city == "reset" or city == "clear" then
+		gc.Settings.CityTargeting = ""
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City capture set to: &lt;IndianRed&gt;none!")
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;City not recognized")
+end</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zcity ?(\w+)?$</regex>
+					</Alias>
+				</AliasGroup>
+				<AliasGroup isActive="yes" isFolder="yes">
+					<name>Presets</name>
+					<script></script>
+					<command></command>
+					<packageName></packageName>
+					<regex></regex>
+					<Alias isActive="yes" isFolder="no">
+						<name>Preset delete</name>
+						<script>gc.deletepreset(matches[2])</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zdelete (.+)$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Preset lists</name>
+						<script>-- Alias for saving, loading (this is a force load attempt, should load fine starting up), and seeing/using a setlist
+
+
+--save function with a name check
+if matches[2] == "save" then
+	if matches[3] then		
+		gc.save(matches[3])
+	elseif matches[3] == nil then
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;lemon_chiffon&gt;Need a name to save with!")
+	end
+end
+
+
+--Load 
+if matches[2] == "loadsettings" then
+	gc.load()
+end
+
+
+--display your presets for using
+if matches[2] == "list" then
+	gc.displaypresets()
+end
+
+
+--Using a preset
+if matches[2] == "set" then
+	if matches[3] then
+		gc.setpreset(matches[3])
+	elseif matches[3] == nil then
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;lemon_chiffon&gt;Need a name to set a preset!")
+	end
+end
+
+--This uses a preset and checks who is in realms with QW.											
+if matches[2] == "load" then
+	if matches[3] then	
+		local name = matches[3]:lower():title()	
+		if table.contains(gc_list, name) then	
+			gc.TempTargetList = table.deepcopy(gc_list[tostring(name)])
+			enableTrigger("QW Target Check")
+			send("qw")
+		else
+			cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;lemon_chiffon&gt;Don't know that list!")
+		end
+		
+	elseif matches[3] == nil then
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;lemon_chiffon&gt;Need a name to load preset!")
+	end
+end
+
+
+
+
+
+
+
+
+
+</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^z(save|loadsettings|set|list|load)(?| (\w+))?$</regex>
+					</Alias>
+				</AliasGroup>
+				<AliasGroup isActive="yes" isFolder="yes">
+					<name>Announce</name>
+					<script></script>
+					<command></command>
+					<packageName></packageName>
+					<regex></regex>
+					<Alias isActive="yes" isFolder="no">
+						<name>Target order call</name>
+						<script>--Alias to call out the target list
+--You can force call your known list on pt by adding f to overide not calling stuff 
+
+if gc.IsLeader then
+    gc.announcer("full")
+	elseif matches[2] == nil then
+    	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;You are &lt;IndianRed&gt;NOT &lt;SlateGrey&gt;the leader. Add &lt;SpringGreen&gt;'f'&lt;SlateGrey&gt; to force call")
+    	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Target order is: &lt;lemon_chiffon&gt;"..table.concat(gc.target_list, ", "))
+end
+
+if matches[2] == "f" then
+     send(string.format("pt Target order is: %s", table.concat(gc.target_list, ", ")),false)
+end</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zcall(f)?$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Call current target</name>
+						<script>-- if you're the leader, this will call the current target, good for if people as what the target is
+-- Can also force announcing the target if not the leader with f modifier similar to zcall for order getServerEncodingsList
+
+if gc.IsLeader then
+		gc.announcer("Single")
+	elseif matches[2] == "f" then
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;lemon_chiffon&gt; Forcing target call")
+     send(string.format("pt Target: %s", target),false)
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt; You are not the leader- add &lt;SpringGreen&gt;'f'&lt;SlateGrey&gt; to force call!")
+end
+</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zc(f)?$</regex>
+					</Alias>
+				</AliasGroup>
+				<AliasGroup isActive="yes" isFolder="yes">
+					<name>Reseting</name>
+					<script></script>
+					<command></command>
+					<packageName></packageName>
+					<regex></regex>
+					<Alias isActive="yes" isFolder="no">
+						<name>Reset targets and callers</name>
+						<script>--Clears the list of targets
+gc.target_list = {}
+
+if gc.Settings.SetEnemy == "Yep" then
+	send("unenemy all")
+end
+
+--Clears Leaders and Callers
+gc.Leader = ""
+--gc.Caller = ""
+--gc.Caller2 = ""
+
+--Clear targets
+target = "none"
+gc.ToTarget = "none"
+
+cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;yellow&gt; All leaders and targets cleared!")
+disableTrigger("Room gag")
+enableTrigger("Stop (Room gag)")</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zreset$</regex>
+					</Alias>
+					<Alias isActive="yes" isFolder="no">
+						<name>Reset Room triggers</name>
+						<script>-- This alias resets the room QL gaging triggers 
+disableTrigger("Room gag")
+enableTrigger("Stop (Room gag)")
+cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt; Reset Room gag")</script>
+						<command></command>
+						<packageName></packageName>
+						<regex>^zre$</regex>
+					</Alias>
+				</AliasGroup>
+			</AliasGroup>
+		</AliasGroup>
+	</AliasPackage>
+</MudletPackage>
