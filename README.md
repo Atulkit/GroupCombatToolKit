@@ -2,6 +2,8 @@
 
 This package is a robust group combat assistant for Mudlet that should makes organizing or following group combat much easier. It follows and switched targets, can call targets and target orders, add/remove/set target orders, designate leaders and additional target callers, report afflictions given, and more. 
 
+Note - Affliction reporting requires AK to use.
+
 # Installation
 
 To install the system: 
@@ -27,7 +29,7 @@ These steps are the quick way to set up the system to follow party target calls.
 1. `zOn` - Turns the system on.
 2. `zL <player>` - Designate group leader. You will follow their targets, auto add their target list if they call it.
 3. `zA` - Toggle on 'auto' target switching.
-4. `zSTAT` - Shows the the system status and what is toggled on/off.
+4. `zSTAT` - Shows the the system status and what is toggled on/off. Toggles are clickable.
 5.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
 6.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
 7.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
@@ -90,3 +92,10 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zSS` - Force save settings
 - `zLS` - Force load settings
 - `zRE` - Reset QL room gag without clearing target order
+
+# Miscellaneous
+
+Added a basic alias for throwing bombs - `^b(c|w|d|b) (.+)$`
+The folder is locked by default and must be activated manually to use.
+
+The alias will get/wield/throwing bombs and triggers to report when you successfully or unsuccessfully (hit a wall) throw a bomb in a direction. If you wield weapons/shields please tailor the alias to fit your combat kit.
