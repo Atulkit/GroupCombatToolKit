@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+	<ScriptPackage>
+		<ScriptGroup isActive="yes" isFolder="yes">
+			<name>Group Combat Scripts</name>
+			<packageName>Group Combat Scripts</packageName>
+			<script></script>
+			<eventHandlerList />
+			<ScriptGroup isActive="yes" isFolder="yes">
+				<name>Group Combat</name>
+				<packageName></packageName>
+				<script>
+--Set all initial default variables, some will be overwritten when settings finish loading 
+gc = gc or {}
+gc.Settings = gc.Settings or {}
+gc_list = gc_list or {}
+
+gc.Settings.TargetSwitch = gc.Settings.TargetSwitch or "manual"
+gc.Settings.SetEnemy = gc.Settings.SetEnemy or "Yep"
+gc.Settings.SetTarget = gc.Settings.SetTarget or false
+gc.Settings.OverRide = gc.Settings.OverRide or false
+gc.Settings.MoveReporting = gc.Settings.MoveReporting or false
+gc.Settings.AffCalling = gc.Settings.AffCalling or false
+gc.Settings.WallCalling = gc.Settings.WallCalling or false
+gc.Settings.CityTargeting = gc.Settings.CityTargeting or "none"
+
+gc.ListEnemied = gc.ListEnemied or "Nope"
+gc.IsLeader = gc.IsLeader or false
+gc.Remove = gc.Remove or false
+gc.target_list = gc.target_list or {}
+gc.BurstTimers = gc.BurstTimer or {}
+gc.bursted = gc.bursted or {}
+gc.InRoom = gc.InRoom or {}
+gc.Leader = gc.Leader or ""
+gc.Caller = gc.Caller or ""
+gc.Caller2 = gc.Caller2 or ""
+gc.SoulList = gc.SoulList or {}
+gc.SoulTimers = gc.SoulTimers or {}
+gc.ToTarget = gc.ToTarget or "none"
+
+gc.TempTargetList = gc.TempTargetList or {}
+
+gc.DontTarget = gc.DontTarget or {}
+
+</script>
+				<eventHandlerList />
+				<Script isActive="yes" isFolder="no">
+					<name>Changelog</name>
+					<packageName></packageName>
+					<script>--Note: Some features are AK dependent.
+
+-- All changes and updates will be through GitHub now.
+-- https://github.com/Atulkit/GroupCombatToolKit 
+
+--[[
+Versions:
+0.9- Initial testing begins
+Changed colour scheme
+Added zBW &lt;city&gt;
+
+0.91-
+Added name checking function for reflexes
+Added function to place into target alias to capture with manual targeting
+Added zSWAP &lt;name&gt; &lt;#&gt; function
+Added zLOUD - Allows calling of targets when not the lead
+Made slain target check if target is on burst list already for really quick kills to remove them and allow retargting
+
+0.92
+Added Soul tracking- Used to skip over dead people when retargeting.. They're on the list for 45 seconds and removed if bursted
+Added zt &lt;partial name&gt; ability- used to target someone from the list with only first couple letters for quick switch with partial name 
+	-not to be confused with plain zt alias used by people in party to manual swap to target called by leader.
+	
+Still to add for souls- If message received the person isn't there to hit, compare if your current target variable person is present in the room list 
+that is gc.InRoom because if you can't hit them but they are appearing in gmcp.room.players they must be a soul. Add them to the soul list 
+
+0.93
+Added detection of a soul with the following methods
+- Trying to hit a target and recieving the message they're not able to be hit.. If this happens, these will check gc.InRoom and soul them if they are
+- If a soul talks
+- From a room description (not on entering a room) When zR is done QL gets done already, so I added trying to pick souls up from room description.. This is not tested yet
+		--That reflex looks like this so kinda basic and might not fire with word wrapping hence the previous method... soul of (\w+)  
+		
+0.94
+Changed room descrition capturing of souls. Likely didn't work as intended and captured only one name in 0.93 
+
+
+0.95
+Added
+- Adding targets to the order, from the room into target order by city or all. zAR   stands for Add Room  
+- Started adding highlights for target leaving room and made toggleable
+Changed RoomGag for room targeting to now use the room title to gag room description. NO MORE COLOUR TRIGGERS! YEAH!
+Changed zLOAD to check who's online and bring over only them from a target order so you don't have to remove a bunch of people!
+Updated zHELP and zSTAT2 a bunch to reflect additions form past and current update 
+Made some changes to echos in attempt to show they came from the system for easier tracking down
+
+1.0
+Finished fixing a few bugs and implimenting a few more target moved out of room lines
+Fixed trying to hit someone thats not your target and the not hear line firing saying target not hear- now the system looks at last command sent for trying to hit target
+
+
+1.1
+Added deliverance and incandescence tracking and avoided targetting
+
+1.2
+Added GMCP text checking for anti-illusion measure
+
+
+1.7 (Atuls Updates)
+Special thanks to Hhaos and Kshavatra for the help and providing some of the code.
+Started to remove or comment out a lot of code related to 'targetassist' package.
+Updated system messages to be slightly less spammy
+Added zTC alias to enable backup target callers to be followed
+Added zGROUP alias to report system status to party (leader, callers, target, enemies, etc)
+- zGROUP defaults to 'Atul' as leader. CHANGE THIS.
+Updated zSTAT and zSTAT2 with more comprehensive infomation
+Updated Party Target trigger. Added exit statement so swapping and calling doesn't happen if target called is already targeted. Prevents endless loops.
+Updated ZHELP and ZHELP2 aliases with up to date information and aliases.
+Added Party Aff Tracking folder to triggers (ONLY USE IF YOU HAVE AK)
+Added Aff Reporting folders to triggers (REQUIRES AK)
+Added Party Gag trigger to gag party messages (DISABLE THIS IF YOU DO NOT PUSH MESSAGES TO A WINDOW)
+- Requires AK for affliction tracking and reporting.
+- Requires adding the following code to OppGainedAff function in AK 'oscore edit functions' script
+   - In oscore edit functions add the following at the beginning of the function
+           -- todo: REMOVE THIS LATER WHEN YOU ADD PARTY CALLS
+          local do_not_report = {
+            -- "paralysis",
+            "",
+            " "
+          }
+        
+          if gmcp.Char.Status.class ~= "Alchemist" then
+            table.insert(do_not_report, "impatience")
+          end
+          
+          local raff = aff:lower()
+          raff = string.split(raff, " ")
+          for _, v in ipairs(raff) do
+            if (not table.contains(do_not_report, v) and not table.contains(gc.affs_to_report, v)) then
+              table.insert(gc.affs_to_report, v)
+            end
+          end
+          --normal OppGainedAff script below
+          
+1.8 Atul's Retooling
+[Alias] zTC -  Able to clear or switch target callers now
+[Trigger] GC Target called edited - Manual targeting no longer auto switches targets on party calls.
+[Trigger] GC Target called edited - Auto targeting will now assign party target to gc.ToTarget even if target is not in users room. Adds functionality to zT alias.
+[Alias] zT - Will now follow gc.ToTarget. Lets users quickly switch to last party target called even if target is not in the room.
+[Trigger] Party Gag - Changed to only gag third party 'says' messages. Note: Disable this trigger if you don't push messages to a console window.
+[Trigger] Party Calls - Adds lines for a few more variations on afflictions called to party.
+[Alias] Reset target and callers - Now resets target list, target, leader, and target callers to default settings.
+[Script] Target list order - Added Legacy NDB functionality to show classes in target order.
+
+1.9 Moved to Github. Changes will be tracked there.
+
+--]]
+</script>
+					<eventHandlerList />
+				</Script>
+				<Script isActive="no" isFolder="no">
+					<name>Your stuff</name>
+					<packageName></packageName>
+					<script>--!!!!!Important below!!!!!
+--[[
+If you have target tracking stuff or display things that need reseting, put that stuff inside the function gc.YourTargetStuff() below and remove comment blocks
+Move this outside of the folder so future updates don't remove your changes
+Examples provided inside of the comment blocks below is mine. It's blocked out so if you update- this new one coming in will be disabled and
+yours that you took out of the folder will still keep working
+--]]
+
+
+
+--[[ 					Delete this line here with the brackets
+
+function gc.YourTargetStuff()
+	--ak.oresetparse()
+	sendAll("unally "..target, "enemy "..target, "st "..target, false)	--Included to ensure target is enemied, good if lead calls a target not on listed. If spammy, remove enemy stuff but keep st target..
+	--GUI.Icon4:echo("&lt;center&gt;Target: " .. gmcp.Char.Status.target) 			--Personal GUI display refresh
+end
+
+registerAnonymousEventHandler("GC Target Changed", "gc.YourTargetStuff")
+
+
+
+--]] --Delete this line with the brackets as well
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--Line below here is used to raise a target change event if you wish to add target switching stuff to the system and run the above function
+--raiseEvent("GC Target Changed")</script>
+					<eventHandlerList />
+				</Script>
+				<Script isActive="no" isFolder="no">
+					<name>Targeting function</name>
+					<packageName></packageName>
+					<script>-- Keep Disabled. Needs fixing. Added to TO DO
+
+function targeting(var)
+send("settarget "..var)
+target = var:lower():title()
+
+--if you do not have AK. Comment this out or delete.
+ak.highlighttarget = ak.highlighttarget or true --Change This To False if Errors
+if ak.highlighttarget == true then
+   if idtwo then killTrigger(idtwo) end
+   idtwo = tempTrigger(target, [[selectString("]] .. target .. [[", 1) fg("red") resetFormat()]])
+   target = target:title()
+   if id then killTrigger(id) end
+   id = tempTrigger(target, [[selectString("]] .. target .. [[", 1) fg("red") resetFormat()]])
+else 
+end
+
+if ak.stack and ak.stack == "none" then ak.classenable() end
+
+--If you do not have Legacy. Comment this out or delete
+if Legacy.NDB.db[target] then
+  local color = Legacy.Settings.NDB.Config[Legacy.NDB.db[target].city:lower()].color
+  Legacy.NDB.lookup(target)
+  sendAll("unally "..target, "enemy "..target)
+  possibleClass = Legacy.NDB.db[target].class
+  Legacy.bigEcho("Target set to: "..("&lt;"..color.."&gt;" or "&lt;white&gt;")..target:title().." &lt;DimGrey&gt;(&lt;gold&gt;Level "..Legacy.NDB.db[target].level.." "..Legacy.NDB.db[target].class.."&lt;DimGrey&gt;)", "purple", "white")
+  tempTimer(4, [[if Legacy.NDB.db[target].class ~= possibleClass then   local color = Legacy.Settings.NDB.Config[Legacy.NDB.db[target].city:lower()].color
+   Legacy.echo("Adjusted &lt;"..color.."&gt;"..target.."'s &lt;white&gt;class to &lt;gold&gt;"..Legacy.NDB.db[target].class.."&lt;white&gt;.") end]])
+end
+
+-- This will always call your target to party 
+-- if isActive("Group Combat", "trigger") == 1 then 
+-- elseif isActive("Group Combat", "trigger") == 0 then
+-- send("pt Target: "..target)
+-- else end
+
+echo("\n")
+cecho("&lt;cyan&gt; Target Changed to "..target)
+echo("\n")
+
+end
+</script>
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Target change</name>
+					<packageName></packageName>
+					<script>--Script handling swapping targets
+--Burst check gets called if the person who died is your target and you like having your target changed
+--Burstcheck looks at a list of recently bursted people and if your target isn't on it, looks for a new target in the room
+
+function gc.Burstcheck(name)
+	if not table.contains(gc.bursted, name) then
+		gc.RoomTarget()
+	end
+end
+
+</script>
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Target list ordering</name>
+					<packageName></packageName>
+					<script>--Display target list for reordering, this makes clickable dialog to shift target order around or remove people
+function gc.order_report()
+
+	cecho("\n&lt;OrangeRed&gt;---Reorder target list---  ("..#gc.target_list..")\n")
+	
+	--For loop to iterate over enemy list to display the clickable links to reorder. Each link calls a below function
+	for n,v in pairs (gc.target_list) do
+  	
+		cechoLink("&lt;blue&gt;^^", [[gc.Shift_top("]]..v..[[")]], "Send "..v.." to first",	true)
+		echo(" ")
+		cechoLink("&lt;medium_aquamarine&gt;Up", [[gc.Shift_up("]]..v..[[")]], "Send "..v.." up one",	true)
+		echo(" ")
+		cechoLink("&lt;medium_aquamarine&gt;Down", [[gc.Shift_down("]]..v..[[")]], "Send "..v.." down one",	true)
+		echo(" ")
+		cechoLink("&lt;blue&gt;vv", [[gc.Shift_bottom("]]..v..[[")]], "Send "..v.." to last",	true)
+		echo(" ")
+		if Legacy.NDB then
+			if Legacy.NDB.db[v] then --added this check to display with or without class, if Legacy NDB doesn't know them then it will still display
+         --If Legacy NDB is present then the class of each person is added
+				cechoLink("&lt;IndianRed&gt;" ..v.. " &lt;grey&gt;("..Legacy.NDB.db[v].class:title().. ")",[[appendCmdLine("zswap ]]..v..[[ ")]] ,"", true)
+      else 
+        --cecho("&lt;IndianRed&gt;" ..v)
+				cechoLink("&lt;IndianRed&gt;" ..v,[[appendCmdLine("zswap ]]..v..[[ ")]],"", true) 
+      end 
+		elseif ndb then
+      if ndb.isperson(v) then --added this check to display with or without class, if NDB doesn't know them then it will still display
+         --If NDB is present then the class of each person is added
+				cechoLink("&lt;IndianRed&gt;" ..v.. " &lt;grey&gt;("..ndb.getclass(v).. ")",[[appendCmdLine("zswap ]]..v..[[ ")]] ,"", true) 
+  
+      else
+				--cecho("&lt;IndianRed&gt;" ..v)
+				cechoLink("&lt;IndianRed&gt;" ..v,[[appendCmdLine("zswap ]]..v..[[ ")]],"", true) 
+			end
+		else
+			--cecho("&lt;red&gt;" ..v.. "\n")
+			cechoLink("&lt;IndianRed&gt;" ..v,[[appendCmdLine("zswap ]]..v..[[ ")]],"", true)
+		end
+		echo("  ")
+		cechoLink("&lt;blue&gt;Remove\n", [[gc.Shift_remove("]]..v..[[")]], "Remove "..v.." from target list",	true)
+
+  end
+	echo("\n")
+end
+
+
+
+--Shift a name up one 
+function gc.Shift_up(name)
+	local position = table.index_of(gc.target_list, name)
+	table.remove(gc.target_list, position)
+	table.insert(gc.target_list,position-1,name)
+	gc.order_report()
+end
+
+
+--Shift a name down one
+function gc.Shift_down(name)
+	local position = table.index_of(gc.target_list, name)
+	table.remove(gc.target_list, position)
+	table.insert(gc.target_list,position+1,name)
+	gc.order_report()
+end
+
+--Move a name to top of list
+function gc.Shift_top(name)
+	local position = table.index_of(gc.target_list, name)
+	table.remove(gc.target_list, position)
+	table.insert(gc.target_list, 1,name)
+	gc.order_report()
+end
+
+--Move a name to bottom of list
+function gc.Shift_bottom(name)
+	local position = table.index_of(gc.target_list, name)
+	table.remove(gc.target_list, position)
+	table.insert(gc.target_list, name)
+	gc.order_report()
+end
+
+--Remove a name from the list
+function gc.Shift_remove(name)
+	local position = table.index_of(gc.target_list, name)
+	table.remove(gc.target_list, position)
+	gc.autoUnenemy(name)
+	gc.order_report()
+end</script>
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Save and load presets and settings</name>
+					<packageName></packageName>
+					<script>--Save function to create presets
+function gc.save(name)
+	
+	--capitalize to avoid errors
+	--Uses the variables saveName- what you call the list- and savelist- to copy over gc.target_list to save
+	local saveName = name:lower():title()
+	local savelist = table.deepcopy(gc.target_list)
+	
+	--Check if it's already a preset or if the target list is empty to not save
+	if table.contains(gc_list, saveName) then
+			cecho("\n&lt;OranageRed&gt;(CombAtul): That list already exists!")
+		elseif savelist == "" then
+			cecho("\n&lt;OranageRed&gt;(CombAtul): Can't save an empty list!")
+		else
+  		--Adds the enemylist to the storage list gc_list as a key/pair and saves to Mudlet folder folder
+			gc_list[tostring(saveName)] = savelist
+  		table.save(getMudletHomeDir().."/GroupCombatPresets.lua", gc_list)		--the save command
+			cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;SlateGrey&gt;Saved preset: &lt;cyan&gt;"..saveName)	
+	end
+end
+
+--Load preset list function
+function gc.load()
+	if io.exists(getMudletHomeDir().."/GroupCombatPresets.lua") then 			--Check there is a file to load
+  	table.load(getMudletHomeDir().."/GroupCombatPresets.lua", gc_list)		--Attempts to load table into gc_list
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;light_blue&gt;Loaded presets..")
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;light_blue&gt; No saved preset list found. Have you saved one before?")
+	end
+end
+
+--Set targetlist to the requested preset name passed to it
+function gc.setpreset(name2)
+	local name = name2:lower():title()
+	if table.contains(gc_list, name) then
+			if gc.Settings.SetEnemy == "Yep" then
+				send("unenemy all")
+			end
+    	gc.target_list = table.deepcopy(gc_list[tostring(name)])											--uses deepcopy to not link the tables 
+    	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Swapped to preset: &lt;cyan&gt;"..name)
+		else
+			cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;I don't know that list name.")
+	end
+	if gc.Settings.SetEnemy == "Yep" then 																					--checks if it should enemy the list
+		gc.autoEnemyList()
+	end	
+end
+
+
+function gc.loadpreset(name2)
+	local name = name2:lower():title()
+	if table.contains(gc_list, name) then
+			if gc.Settings.SetEnemy == "Yep" then
+				send("unenemy all")
+			end
+    	gc.target_list = table.deepcopy(gc_list[tostring(name)])											--uses deepcopy to not link the tables 
+    	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Swapped to preset: &lt;cyan&gt;"..name)
+		else
+			cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;I don't know that list name.")
+	end
+	if gc.Settings.SetEnemy == "Yep" then 																					--checks if it should enemy the list
+		gc.autoEnemyList()
+	end	
+end
+
+
+--Show the stored presets with name to call them
+function gc.displaypresets()
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Preset target lists: &lt;lemon_chiffon&gt;zLOAD &lt;SlateGrey&gt;(Only people around) &lt;lemon_chiffon&gt; zSET&lt;SlateGrey&gt; (Copy of list)")	
+		for k, v in pairs (gc_list) do
+			cecho("\n&lt;grey&gt;[&lt;cyan&gt;"..k.. "&lt;grey&gt;]- &lt;light_blue&gt; "..table.concat(v, ", "))
+		end
+end
+
+--Delete a preset by setting its name (key) to nil and then saves the gc_list table to complete deletion
+function gc.deletepreset(name)
+	local name = name:title()
+	if gc_list == "" then
+		cecho("\n&lt;OrangeRed&gt;(CombAtul):&lt;yellow&gt;There's nothing to delete. Did you load your presets?")
+	elseif table.contains(gc_list, name) then
+		gc_list[tostring(name)] = nil
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Successfully deleted preset: &lt;cyan&gt;"..name)
+		table.save(getMudletHomeDir().."/GroupCombatPresets.lua", gc_list)
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Couldn't find that preset to delete")
+	end
+end
+
+--Load past configuration settings
+function gc.loadSettings()
+	if io.exists(getMudletHomeDir().."/GroupCombatSettings.lua") then 							--Check there is a file to load
+  	table.load(getMudletHomeDir().."/GroupCombatSettings.lua", gc.Settings)			--Attempts to load table into gc.Settings
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;light_blue&gt;Loaded Group Combat configurations..")
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;light_blue&gt;No saved settings found. First time starting up?")
+	end
+  sendGMCP([[Core.Supports.Add ["Comm.Channel 1"] ]]) --This ensures GMCP text module loads 
+	target = target or "none" 				--This target variable establishment here is to ensure the system has this if someone isn't using target. They should be but just incase. Should overwrite or screw it up.
+	
+	if gc.Settings.OverRide == true then --this checkes the setting to override after loading and switches the default false to true
+		gc.IsLeader = true
+	end
+
+end
+
+--Saves current GC settings for next session- attempts to reduce need to constantly set everything again
+function gc.saveSettings()
+	table.save(getMudletHomeDir().."/GroupCombatSettings.lua", gc.Settings)
+	cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;light_blue&gt;Settings saved for next time!")
+end
+
+registerAnonymousEventHandler("sysExitEvent", "gc.saveSettings")	--Should save on closing
+registerAnonymousEventHandler("sysLoadEvent", "gc.loadSettings")	--Load settings with startup
+registerAnonymousEventHandler("sysLoadEvent", "gc.load")					--Load presets on startup
+
+
+
+</script>
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Group Combat functions</name>
+					<packageName></packageName>
+					<script>--Handle single auto enemy
+function gc.autoEnemy(name)
+	local name = name
+	if gc.Settings.SetEnemy == "Yep" then
+		send("Enemy "..name,false)
+		enableTrigger("Full enemy list")
+		tempTimer(2, [[disableTrigger("Full enemy list")]])
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Make sure to enemy " ..name)
+		gc.ListEnemied = "Nope"
+	end
+end
+
+--Handle single unenemy
+function gc.autoUnenemy(name)
+	local name = name
+	if gc.Settings.SetEnemy == "Yep" then
+		send("Unenemy "..name,false)
+	else
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SlateGrey&gt;Make sure to unenemy " ..name)
+	end
+end
+
+--List enemy- this function enemies those on the target list, starts a trigger to detect maxing out enemy list as well
+function gc.autoEnemyList()
+  for _,v in pairs (gc.target_list) do
+  	send("Enemy "..v,false)
+		enableTrigger("Full enemy list")
+		gc.ListEnemied = "Yep"
+		tempTimer(4, [[disableTrigger("Full enemy list")]])
+  end
+end
+
+
+--Used to call out the target change or call out the target list
+function gc.announcer(type)
+	if gc.IsLeader then
+			if type == "Single" then
+      		send(string.format("pt Target: %s", target),false)--Change these if your city/group uses a different syntax
+			elseif type == "full" then
+					send(string.format("pt Target order is: %s", table.concat(gc.target_list, ", ")),false)
+    	end
+	end
+end
+
+
+function gc.TargetLeftCheck()
+	if not table.contains(gc.InRoom, target) then
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;black:OrangeRed&gt;===================Target likely left!===================")
+		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;black:OrangeRed&gt;===================Target likely left!===================")
+		--cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;black:OrangeRed&gt;===================Target likely left!===================")
+    send("pt "..target.." left!")
+	end
+end
+
+function combatstatus()
+cecho("\n&lt;OrangeRed&gt;---Party combat system status:") 
+	if isActive("Group Combat", "trigger") == 1 then 
+		cecho("&lt;OrangeRed&gt;(On)") 
+	elseif isActive("Group Combat", "trigger") == 0 then 
+		cecho("&lt;IndianRed&gt;(OFF!)")
+	end
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Group leader:  &lt;cyan&gt;"..gc.Leader)
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Targeting:     &lt;dodger_blue&gt;" ..target)
+cechoLink("\n&lt;SlateGrey&gt;                Target First", [[expandAlias("zf")]], "Click to target first person in target order", true)
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemy list:    &lt;light_blue&gt;" ..table.concat(gc.target_list, ", "))
+cechoLink("\n&lt;SlateGrey&gt;                REORDER", [[gc.order_report()]], "Click to reorder targets", true)
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Enemied list:  ")
+cechoLink("&lt;MistyRose&gt;"..tostring(gc.ListEnemied):title().."", [[gc.autoEnemyList()]], "If false, click to enemy target list", true)
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Call target:   ")
+cechoLink("&lt;MistyRose&gt;" ..tostring(gc.IsLeader):title().."", [[expandAlias("zloud")]], "Toggle target calling on or off", true)
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Re-Targeting:  ")
+cechoLink("&lt;MistyRose&gt;" ..tostring(gc.Settings.SetTarget):title().."", [[expandAlias("za")]], "Toggle auto and manual targeting", true)
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Moved report:  ")
+cechoLink("&lt;MistyRose&gt;" ..tostring(gc.Settings.MoveReporting):title().."", [[expandAlias("zmove")]], "Toggle reporting target movement", true)
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Aff reporting: ")
+cechoLink("&lt;MistyRose&gt;" ..tostring(gc.Settings.AffCalling):title().."", [[expandAlias("zaffs")]], "Togggle affliction reporting", true)
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Wall reporting:")
+cechoLink("&lt;MistyRose&gt;" ..tostring(gc.Settings.WallCalling):title().."", [[expandAlias("zwalls")]], "Toggle reporting walls", true)
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;City target:   ")
+cechoLink("&lt;MistyRose&gt;" ..tostring(gc.Settings.CityTargeting):title().."", [[expandAlias("zbw "..gc.Settings.CityTargeting)]], "Click to add everyone in city to target list", true)
+
+cecho("\n&lt;light_blue&gt;-&lt;yellow&gt;Party target:  ")
+cechoLink("&lt;SlateGrey&gt;" ..tostring(gc.Settings.TargetSwitch):title().."", [[expandAlias("zp")]], "Toggle auto or manual switching to party targets", true)
+
+end
+
+</script>
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Room targeting</name>
+					<packageName></packageName>
+					<script>--Full credit to Pyori for this Room capturing code in the Player Targeting scripts- Would have taken me forever to figure out how to do this
+function gc.RoomPeople(event)
+	if event == "gmcp.Room.Players" then
+		
+		--Reset people in room, then parse the gmcp list to add people who aren't you.
+		gc.InRoom = {}
+		local me = gmcp.Char.Status.name:title() 		--establish your name to not add yourself
+		for _, tab in pairs(gmcp.Room.Players) do 	--This for loop puts all the names in the table gc.InRoom
+			if tab.name ~= me then
+				table.insert(gc.InRoom, tab.name)
+			end
+		end
+		
+	elseif event == "gmcp.Room.AddPlayer" then		--If someone entered the room, just add them	
+	
+		--Grab the player from gmcp.
+		local person = gmcp.Room.AddPlayer
+		--If the person isn't already in the list, then add them.
+		if not table.contains(gc.InRoom, person.name) then
+			table.insert(gc.InRoom, person.name)
+		end
+	elseif event == "gmcp.Room.RemovePlayer" then
+		local person = gmcp.Room.RemovePlayer
+		table.remove(gc.InRoom, table.index_of(gc.InRoom, person))
+	end
+end
+
+registerAnonymousEventHandler("gmcp.Room.Players", "gc.RoomPeople")					--This makes the above function run when Room.Player data comes in
+registerAnonymousEventHandler("gmcp.Room.RemovePlayer", "gc.RoomPeople")		--This runs above function when someone leaves
+registerAnonymousEventHandler("gmcp.Room.AddPlayer", "gc.RoomPeople")				--This runa above function when someone enters (not perfect)-Doesn't capture followers?
+
+
+--This function attempts to compare who is in the room with who is on the target list in order of target list- also cross checks and skips people on SoulList (recent dead)
+function gc.RoomTarget()
+	for n, v in pairs (gc.target_list) do
+    	if table.contains(gc.InRoom, v) and not table.contains(gc.SoulList, v) then
+    		target = v
+    		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Found and targeted  &lt;IndianRed&gt;"..target.."!")
+				cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Found and targeted  &lt;IndianRed&gt;"..target.."!")
+				cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;yellow&gt;Found and targeted  &lt;IndianRed&gt;"..target.."!")
+        expandAlias("t "..target)
+				raiseEvent("GC Target Changed")	
+				gc.announcer("Single")
+    		break
+    	elseif n == #gc.target_list then
+    		cecho("\n&lt;OrangeRed&gt;(CombAtul): &lt;SpringGreen&gt;No enemies from target order found! &lt;cyan&gt;--&gt;Set your own!!")
+    		break
+    	end
+  end
+end
+
+
+
+
+</script>
+					<eventHandlerList />
+				</Script>
+				<Script isActive="yes" isFolder="no">
+					<name>Room gag</name>
+					<packageName></packageName>
+					<script>--This function is used to find the line for where a room description starts 
+--Good for either gagging a room description or setting up a gated trigger to read through a room description to pick things up (eg. If people are souls, directions of things)
+
+function RoomTitle()
+	local RoomName = gmcp.Room.Info.name
+	local Line = getCurrentLine()
+	Line = string.gsub(Line, "%." , "")
+	
+	
+	if tostring(Line) == tostring(RoomName) then
+		return true
+		
+		else
+		return false
+	end
+end
+</script>
+					<eventHandlerList />
+				</Script>
+				<ScriptGroup isActive="yes" isFolder="yes">
+					<name>Useful code snippets</name>
+					<packageName></packageName>
+					<script>--[[
+-- I recomment adding this to your targeting alias with the following if statement
+
+if ndb.getcity(target) ~= "Hashan" then
+	gc.TargetAdd(target)
+end
+
+
+--Can make it this if you don't want it to add while hunting since their's no lead set
+if gc.Leader ~= "" or gc.Leader ~= "none" then
+	gc.TargetAdd(target)
+end
+
+
+
+-- Note: This must be after you set target variable or you won't pass an updated target.. or then it should be this gc.TargetAdd(matches[2])
+
+
+You can also make both checks happen like this
+
+
+if gc.Leader ~= "" or gc.Leader ~= "none" then
+	if ndb.getcity(target) ~= "Cyrene" then
+		gc.TargetAdd(target)
+	end
+end
+
+--or here it is with some toggle you have on an alias
+--For example, in your target alias
+
+if add_target then
+	gc.TargetAdd(target)
+end
+
+--Separate alias 
+pattern- I hate coming up with these so pick something easy
+
+Code--&gt;
+add_target = add_target or false
+if add_target == false then
+		add_target = true
+		cecho("\n&lt;lemon_chiffon&gt;-Adding targets to order!")
+	else
+		add_target = false
+		cecho("\n&lt;IndianRed&gt;-Not adding targets to order!")
+end
+
+
+
+--Also, add this to your target alias, this is for announcing a target change on pt when you perform it with your target alias
+and it will only announce when you are either the group leader or calling target changes anyways
+
+gc.announcer("Single")
+
+
+--]]
+
+
+
+
+</script>
+					<eventHandlerList />
+					<Script isActive="yes" isFolder="no">
+						<name>Useful for you</name>
+						<packageName></packageName>
+						<script>--This function takes a name you pass it to check if a person is on your target list to act on. Returns true if they are or false
+-- Use it like this usually in a reflex... gc.IsTarget(matches[2]) ... if you want to reflexively do something to a person on your list 
+function gc.IsTarget(name)
+	if table.contains(gc.target_list, name) then
+		return true
+	else
+		return false
+	end
+end
+
+
+--This funciton takes a name you give it and adds it to your target list. Good to add this to your general target alias to easily grab names
+--See useful code snippets for how to work this in to your alias without adding random stuff to your target list 
+function gc.TargetAdd(name)
+	if not table.contains(gc.target_list, name) then
+		table.insert(gc.target_list, name)
+	end
+end</script>
+						<eventHandlerList />
+					</Script>
+				</ScriptGroup>
+			</ScriptGroup>
+		</ScriptGroup>
+	</ScriptPackage>
+</MudletPackage>
