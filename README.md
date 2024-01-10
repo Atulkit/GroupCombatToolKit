@@ -11,7 +11,7 @@ To install the system:
 1. Download the zip.
 2. Unzip it somewhere permanent. Don't delete the unzipped files.
 3. Make sure that you're connected to Achaea and logged in.
-4. Install `Raid Assist Aliases.mpackage`, `Raid Assist Scripts.mpackage`, `Raid Assist Triggers.mpackage` in the Package Manager.
+4. Install `Group Combat Aliases.mpackage`, `Group Combat Scripts.mpackage`, `Group Combat Triggers.mpackage` in the Package Manager.
 5. QQ and Restart Mudlet. System is ready to use!
 
 # Basic Setup
@@ -22,6 +22,35 @@ Disable/Replace:
 - 'targeting alias' in aliases folder
 - 'targeting funtion' in scripts folder
 - Search for 'targeting(target)' and replace with your own target function or alias
+
+## Affliction Calling Setup
+This requires the AK package to run. `Group Combat Scripts` should now automatically update the `ocscore edit functions` in the AK scripts. If it is doesn't then:
+- Navigate to `oscore edit functions` in Scripts > AK > AK Opponent Tracking > Multiuse Functions > `oscore edit functions`
+- Immediately under the beginning of the function `function OppGainedAff(aff,source)` paste the following code
+```
+  -- Party Aff Tracking for Group Combat (needs tweaking)
+  if isActive("Group Combat", "trigger") == 1 then
+  local do_not_report = {
+    -- "paralysis",
+    "",
+    " "
+  }
+
+  if gmcp.Char.Status.class ~= "Alchemist" then
+    table.insert(do_not_report, "impatience")
+  end
+  
+  local raff = aff:lower()
+  raff = string.split(raff, " ")
+  for _, v in ipairs(raff) do
+    if (not table.contains(do_not_report, v) and not table.contains(gc.affs_to_report, v)) then
+      table.insert(gc.affs_to_report, v)
+    end
+  end
+ end
+  --normal OppGainedAff script below
+```
+- Save the changes and you are ready to call afflictions to the party.
 
 ## Setting up to follow party targets
 These steps are the quick way to set up the system to follow party target calls.
@@ -34,8 +63,8 @@ These steps are the quick way to set up the system to follow party target calls.
 6.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
 7.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
 
-- `zR` - Switches to first target in the target order that is in the room
-- `zN` - Switch to next target in list
+- `zR` - Switches to first target in the target order THAT IS IN THE ROOM
+- `zN` - Switch to next target in the order
 - `zF` - Switch to first target in order
 - `zT` - Switch to last party target called
 
@@ -47,10 +76,11 @@ To set up the system to lead. Follow the above steps, plus:
 2. `zBW <city name or first letter>` - Auto adds everyone from a city to target list
 3. `zCITY <city name of first letter>` - Sets primary target city.
 4. `zADD <enemy> / zMULTI <enemy> <enemy> <enemy>` - Manually adds enemy/enemies to target list.
-5. `zORDER` - Show target list and set target order.
-6. `zF` - Set and call first target to party.
-7. `zREPORT` - Toggle on reporting movement, afflictions, and walls to party.
-8. `zGROUP` - Reports information from `zSTAT` to party.
+5. `zENEMY` - Enemies everyone in the target list (if not done automatically)
+6. `zORDER` - Show target list and set target order.
+7. `zF` - Set and call first target to party.
+8. `zREPORT` - Toggle on reporting movement, afflictions, and walls to party.
+9. `zGROUP` - Reports information from `zSTAT` to party.
 
 ## All Aliases
 
@@ -94,9 +124,25 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zLS`               - Force load settings
 - `zRE`               - Reset QL room gag without clearing target order
 
-# Miscellaneous
+### Miscellaneous
 
+## Bombs
 Added a basic alias for throwing bombs - `^b(c|w|d|b|o) (.+)$`
 The folder is locked by default and must be activated manually to use.
 
 The alias will get/wield/throwing bombs (or orbsigils) and triggers to report when you successfully or unsuccessfully (hit a wall) throw a bomb in a direction. If you wield weapons/shields please tailor the alias to fit your combat kit.
+
+## Walls
+When active (`zWALLS`) it will call out all walls you encounter to the party.
+
+## Lyre and Shields
+
+Folder in triggers. When enabled it will announce when your target has shielded or used the lyre defense.
+- Olivebranch to be added soon.
+
+## Instant Kills Reporting
+
+Folder in Triggers. When enabled it will announce when your target has activated an instant kill.
+- Only Incandescence and Deliverance have been added so far.
+
+
