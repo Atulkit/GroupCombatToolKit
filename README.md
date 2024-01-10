@@ -51,6 +51,7 @@ This requires the AK package to run. `Group Combat Scripts` should now automatic
   --normal OppGainedAff script below
 ```
 - Save the changes and you are ready to call afflictions to the party.
+### NOTE: Double check to see that there are not TWO `oscore edit functions` in your scripts. There should only be one, but if there are two then the one with this code  is only one you need with this update.
 
 ## Setting up to follow party targets
 These steps are the quick way to set up the system to follow party target calls.
