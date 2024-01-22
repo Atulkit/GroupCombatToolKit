@@ -59,29 +59,31 @@ These steps are the quick way to set up the system to follow party target calls.
 1. `zOn` - Turns the system on.
 2. `zL <player>` - Designate group leader. You will follow their targets, auto add their target list if they call it.
 3. `zA` - Toggle on 'auto' target switching.
-4. `zSTAT` - Shows the the system status and what is toggled on/off. Toggles are clickable.
-5.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
-6.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
-7.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
+4. `zP` - Toggle on 'auto' target switching to follow leaders targets.
+5. `zSTAT` - Shows the the system status and what is toggled on/off. Toggles are clickable.
+6.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
+7.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
+8.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
 
-- `zR` - Switches to first target in the target order THAT IS IN THE ROOM
-- `zN` - Switch to next target in the order
-- `zF` - Switch to first target in order
-- `zT` - Switch to last party target called
+- `zR` - Switches to first target in the target order [THAT IS IN THE ROOM].
+- `zN` - Switch to next target in the order.
+- `zF` - Switch to first target in order.
+- `zT` - Switch to last party target called.
 
 # To Lead Groups
 
 To set up the system to lead. Follow the above steps, plus:
 
 1. `zL <ME>` - Sets you as the group leader. You will echo all target switches to the party. (`zLOUD` is does not need to be toggled on.)
-2. `zBW <city name or first letter>` - Auto adds everyone from a city to target list
+2. `zBW <city name or first letter>` - Auto adds everyone from a city to target list.
 3. `zCITY <city name of first letter>` - Sets primary target city.
 4. `zADD <enemy> / zMULTI <enemy> <enemy> <enemy>` - Manually adds enemy/enemies to target list.
-5. `zENEMY` - Enemies everyone in the target list (if not done automatically)
-6. `zORDER` - Show target list and set target order.
-7. `zF` - Set and call first target to party.
-8. `zREPORT` - Toggle on reporting movement, afflictions, and walls to party.
-9. `zGROUP` - Reports information from `zSTAT` to party.
+   (Alternative) `zBW <city>` - Adds all online members of the target city to the target list.
+6. `zENEMY` - Enemies everyone in the target list (if not done automatically).
+7. `zORDER` - Show target list and set target order.
+8. `zF` - Set and call first target to party.
+9. `zREPORT` - Toggle on reporting movement, afflictions, and walls to party.
+10. `zGROUP` - Reports information from `zSTAT` to party.
 
 ## All Aliases
 
@@ -101,10 +103,10 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zSWAP <name> <#>`  - Manual reordering person to a position
 - `zENEMY`            - Enemies the target list
 - `zAUTO`             - Enable setting enemies automatically
-- `zA`                - Turn on target switching if your target dies!
+- `zA`                - Turn on target switching. If your target dies it will auto switch for you!
 - `zN,zF,z#`          - Next, First, Position target
 - `zT <partial name>` - Target with only first few letters
-- `zP,zPAUTO/MANUAL`  - Setting for party leader target switching
+- `zP,zPAUTO/MANUAL`  - Setting for party leader target switching. Will swap to leaders targets as they call them.
 - `zT`                - Manual target last leader target call
 - `zR`                - Check the room for the highest ordered target and target them
 - `zLOUD`             - Make yourself call as if you were leader but not set to lead
@@ -125,7 +127,7 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zLS`               - Force load settings
 - `zRE`               - Reset QL room gag without clearing target order
 
-### Miscellaneous
+# Miscellaneous
 
 ## Bombs
 Added a basic alias for throwing bombs - `^b(c|w|d|b|o) (.+)$`
