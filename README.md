@@ -17,7 +17,7 @@ To install the system:
 # Basic Setup
 
 ## Targeting Alias and Functions
-###NOTE: This package comes with a target alias and target function script. If you have your own be sure to disable your own or replace the ones in this package**
+### NOTE: This package comes with a target alias and target function script. If you have your own be sure to disable your own or replace the ones in this package**
 Disable/Replace:
 - `targeting alias` in aliases folder
 - `targeting funtion` in scripts folder
@@ -53,6 +53,8 @@ This requires the AK package to run. `Group Combat Scripts` should now automatic
 - Save the changes and you are ready to call afflictions to the party.
 ### NOTE: Double check to see that there are not TWO `oscore edit functions` in your scripts. There should only be one, but if there are two then the one with this code  is only one you need with this update.
 
+
+
 ## Setting up to follow party targets
 These steps are the quick way to set up the system to follow party target calls.
 
@@ -70,6 +72,7 @@ These steps are the quick way to set up the system to follow party target calls.
 - `zF` - Switch to first target in order.
 - `zT` - Switch to last party target called.
 
+
 # To Lead Groups
 
 To set up the system to lead. Follow the above steps, plus:
@@ -84,6 +87,10 @@ To set up the system to lead. Follow the above steps, plus:
 8. `zF` - Set and call first target to party.
 9. `zREPORT` - Toggle on reporting movement, afflictions, and walls to party.
 10. `zGROUP` - Reports information from `zSTAT` to party.
+
+
+
+
 
 ## All Aliases
 
