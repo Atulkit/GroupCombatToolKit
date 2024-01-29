@@ -17,13 +17,13 @@ To install the system:
 # Basic Setup
 
 ## CHECK THIS FIRST
-### NOTE: This package comes with a target alias and target function script. If you have your own be sure to disable your own or replace the ones in this package**
+#### NOTE: This package comes with a target alias and target function script. If you have your own be sure to disable your own or replace the ones in this package**
 Disable/Replace:
 - `targeting alias` in aliases folder
 - `targeting funtion` in scripts folder
 - Search for 'targeting(target)' and replace with your own target function or alias
 
-## Affliction Calling Setup
+### Affliction Calling Setup
 This requires the AK package to run. `Group Combat Scripts` should now automatically update the `ocscore edit functions` in the AK scripts. If it is doesn't then:
 - Navigate to `oscore edit functions` in Scripts > AK > AK Opponent Tracking > Multiuse Functions > `oscore edit functions`
 - Immediately under the beginning of the function `function OppGainedAff(aff,source)` paste the following code
@@ -51,7 +51,7 @@ This requires the AK package to run. `Group Combat Scripts` should now automatic
   --normal OppGainedAff script below
 ```
 - Save the changes and you are ready to call afflictions to the party.
-### NOTE: Double check to see that there are not TWO `oscore edit functions` in your scripts. There should only be one, but if there are two then the one with this code  is only one you need with this update.
+#### NOTE: Double check to see that there are not TWO `oscore edit functions` in your scripts. There should only be one, but if there are two then the one with this code  is only one you need with this update.
 
 
 
@@ -75,7 +75,7 @@ These steps are the quick way to set up the system to follow party target calls.
 - `z#` - Switch to a specific target number in the list.
 
 
-# To Lead Groups
+## To Lead Groups
 
 To set up the system to lead. Follow the above steps, plus:
 
@@ -99,7 +99,7 @@ To set up the system to lead. Follow the above steps, plus:
 List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` will give the full and up to date list in game.
 
 - `zON/OFF`           - Raid system all on or off
-- `zS/zSTAT`             - Raid system info
+- `zS/zSTAT`          - Raid system info
 - `zHELPS`            - Display all commands
 - `zL <name or 'Me'>` - Set leader
 - `zORDER`            - List target order for reordering.
@@ -137,22 +137,25 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zLS`               - Force load settings
 - `zRE`               - Reset QL room gag without clearing target order
 
-# Miscellaneous
+## Miscellaneous
 
-## Bombs
+### Bombs
 Added a basic alias for throwing bombs - `^b(c|w|d|b|o) (.+)$`
 The folder is locked by default and must be activated manually to use.
 
 The alias will get/wield/throwing bombs (or orbsigils) and triggers to report when you successfully or unsuccessfully (hit a wall) throw a bomb in a direction. If you wield weapons/shields please tailor the alias to fit your combat kit.
 
-## Walls
+### Walls
 When active (`zWALLS`) it will call out all walls you encounter to the party.
 
-## Lyre and Shields
+### Movement
+Continuously adding movement lines for people who successfully leave the room. If you see a line missing, reach out so it can be added!
+
+### Lyre and Shields
 
 Folder in triggers. When enabled it will announce when your target has shielded, lyred, or used olivebranch.
 
-## Instant Kills Reporting
+### Instant Kills Reporting
 
 Folder in Triggers. When enabled it will announce when your target has activated an instant kill.
 - Only Incandescence and Deliverance have been added so far.
