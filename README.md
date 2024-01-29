@@ -16,7 +16,7 @@ To install the system:
 
 # Basic Setup
 
-## Targeting Alias and Functions
+## CHECK THIS FIRST
 ### NOTE: This package comes with a target alias and target function script. If you have your own be sure to disable your own or replace the ones in this package**
 Disable/Replace:
 - `targeting alias` in aliases folder
