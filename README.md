@@ -66,11 +66,13 @@ These steps are the quick way to set up the system to follow party target calls.
 6.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
 7.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
 8.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
+9.  Optional: `zGAG` - Will toggle on/off gaggin the party chat. Off by default. (ONLY USE IF YOU PUSH YOUR CHAT TO A UI WINDOW)
 
 - `zR` - Switches to first target in the target order [THAT IS IN THE ROOM].
 - `zN` - Switch to next target in the order.
 - `zF` - Switch to first target in order.
 - `zT` - Switch to last party target called.
+- `z#` - Switch to a specific target number in the list.
 
 
 # To Lead Groups
@@ -82,7 +84,7 @@ To set up the system to lead. Follow the above steps, plus:
 3. `zCITY <city name of first letter>` - Sets primary target city.
 4. `zADD <enemy> / zMULTI <enemy> <enemy> <enemy>` - Manually adds enemy/enemies to target list.
    (Alternative) `zBW <city>` - Adds all online members of the target city to the target list.
-6. `zENEMY` - Enemies everyone in the target list (if not done automatically).
+6. `zENEMY` - Enemies everyone in the target list (if not done automatically via `zAUTO`).
 7. `zORDER` - Show target list and set target order.
 8. `zF` - Set and call first target to party.
 9. `zREPORT` - Toggle on reporting movement, afflictions, and walls to party.
@@ -97,35 +99,36 @@ To set up the system to lead. Follow the above steps, plus:
 List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` will give the full and up to date list in game.
 
 - `zON/OFF`           - Raid system all on or off
-- `zSTAT`             - Raid system info
+- `zS/zSTAT`             - Raid system info
 - `zHELPS`            - Display all commands
 - `zL <name or 'Me'>` - Set leader
-- `zORDER`            - List target order for reordering
-- `zCALL(F)`          - Call target order, F forces announce
-- `zC(F)`             - Call current target, F forces announce
-- `zGROUP`            - Report leaders, target, target list, callers, and more to party
-- `zADD <name (#)>`   - Add enemy to list at end or into a spot
-- `zMULTI <name>, <name>, <name>, etc` - Add several enemies at once
-- `zREMOVE <name>`    - Remove enemy from list
-- `zSWAP <name> <#>`  - Manual reordering person to a position
-- `zENEMY`            - Enemies the target list
-- `zAUTO`             - Enable setting enemies automatically
+- `zORDER`            - List target order for reordering.
+- `zCALL(F)`          - Call target order, F forces announce.
+- `zC(F)`             - Call current target, F forces announce.
+- `zGROUP`            - Report leaders, target, target list, callers, and more to party.
+- `zADD <name (#)>`   - Add enemy to list at end or into a spot.
+- `zMULTI <name>, <name>, <name>, etc` - Add several enemies at once.
+- `zREMOVE <name>`    - Remove enemy from list.
+- `zSWAP <name> <#>`  - Manual reordering person to a position.
+- `zENEMY`            - Enemies the target list.
+- `zAUTO`             - Enable setting enemies automatically.
 - `zA`                - Turn on target switching. If your target dies it will auto switch for you!
-- `zN,zF,z#`          - Next, First, Position target
-- `zT <partial name>` - Target with only first few letters
+- `zN,zF,z#`          - Next, First, Position target.
+- `zT <partial name>` - Target with only first few letters.
 - `zP,zPAUTO/MANUAL`  - Setting for party leader target switching. Will swap to leaders targets as they call them.
-- `zT`                - Manual target last leader target call
-- `zR`                - Check the room for the highest ordered target and target them
-- `zLOUD`             - Make yourself call as if you were leader but not set to lead
-- `zBW <city letter>` - Add complete city to target order
-- `zAR (h|m|t|a|c|e|r|all)` - Adds new people in room from that city to list
-- `zRESET`            - Empty target list
-- `zREPORT`           - Toggle on/off reporting target movement, affliction, and wall callouts all at once
-- `zMOVE`             - Toggle reporting target movement
-- `zAFFS`             - Toggle reporting afflictions
-- `zWALLS`            - Toggle highlighting walls
-- `zCITY`             - Change default city to add room targets from
-- `zLIST`             - Display saved lists to use
+- `zT`                - Manual target last leader target call.
+- `zR`                - Check the room for the highest ordered target and target them.
+- `zLOUD`             - Make yourself call as if you were leader but not set to lead.
+- `zBW <city letter>` - Add complete city to target order.
+- `zAR (h|m|t|a|c|e|r|all)` - Adds new people in room from that city to target list.
+- `zRESET`            - Empty target list.
+- `zREPORT`           - Toggle on/off reporting target movement, affliction, and wall callouts all at once.
+- `zMOVE`             - Toggle reporting target movement.
+- `zAFFS`             - Toggle reporting afflictions.
+- `zWALLS`            - Toggle highlighting walls.
+- `zCITY <CITY>`      - Change default city to add room targets from.
+- `zLIST`             - Display saved lists to use.
+- `zGAG`              - Gags party gag to reduce spam. ONLY USE IF YOU PUSH CHAT TO A UI WINDOW.
 - `zDELETE <name>`    - Delete a preset
 - `zSAVE <name>`      - Save target order for future
 - `zLOAD <name>`      - Load only those in realms into order
@@ -147,12 +150,9 @@ When active (`zWALLS`) it will call out all walls you encounter to the party.
 
 ## Lyre and Shields
 
-Folder in triggers. When enabled it will announce when your target has shielded or used the lyre defense.
-- Olivebranch to be added soon.
+Folder in triggers. When enabled it will announce when your target has shielded, lyred, or used olivebranch.
 
 ## Instant Kills Reporting
 
 Folder in Triggers. When enabled it will announce when your target has activated an instant kill.
 - Only Incandescence and Deliverance have been added so far.
-
-
