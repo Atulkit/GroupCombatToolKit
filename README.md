@@ -2,7 +2,7 @@
 
 This package is a robust group combat assistant for Mudlet that should makes organizing or following group combat much easier. It follows and switched targets, can call targets and target orders, add/remove/set target orders, designate leaders and additional target callers, report afflictions given, and more. 
 
-Note - Affliction reporting requires AK to use. NDB functions require svof NBD or Legacy NDB.
+# Note - Affliction reporting requires AK to use. NDB functions require svof NBD or Legacy NDB. {IF YOU HAVE OTHER SCRIPTS OR TRIGGERS FOR TARGET CALLING/FOLLOWING YOU NEED TO DISABLE THEM BEFORE USING}
 
 # Installation
 
@@ -63,10 +63,11 @@ These steps are the quick way to set up the system to follow party target calls.
 3. `zA` - Toggle on 'auto' target switching.
 4. `zP` - Toggle on 'auto' target switching to follow leaders targets.
 5. `zSTAT` - Shows the the system status and what is toggled on/off. Toggles are clickable.
-6.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
-7.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
-8.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
-9.  Optional: `zGAG` - Will toggle on/off gaggin the party chat. Off by default. (ONLY USE IF YOU PUSH YOUR CHAT TO A UI WINDOW)
+6. `zChannel <pt/party>` - Sets up GC to call to party by default.
+7.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
+8.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
+9.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
+10.  Optional: `zGAG` - Will toggle on/off gaggin the party chat. Off by default. (ONLY USE IF YOU PUSH YOUR CHAT TO A UI WINDOW)
 
 - `zR` - Switches to first target in the target order [THAT IS IN THE ROOM].
 - `zN` - Switch to next target in the order.
@@ -129,6 +130,7 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zCITY <CITY>`      - Change default city to add room targets from.
 - `zLIST`             - Display saved lists to use.
 - `zGAG`              - Gags party gag to reduce spam. ONLY USE IF YOU PUSH CHAT TO A UI WINDOW.
+- `zCHANNEL <channel>`- Sets the channel where targets and callouts will be reported to 
 - `zDELETE <name>`    - Delete a preset
 - `zSAVE <name>`      - Save target order for future
 - `zLOAD <name>`      - Load only those in realms into order
