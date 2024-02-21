@@ -60,14 +60,15 @@ These steps are the quick way to set up the system to follow party target calls.
 
 1. `zOn` - Turns the system on.
 2. `zL <player>` - Designate group leader. You will follow their targets, auto add their target list if they call it.
-3. `zA` - Toggle on 'auto' target switching.
-4. `zP` - Toggle on 'auto' target switching to follow leaders targets.
-5. `zSTAT` - Shows the the system status and what is toggled on/off. Toggles are clickable.
-6. `zChannel <pt/party>` - Sets up GC to call to party by default.
-7.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
-8.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
-9.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
-10.  Optional: `zGAG` - Will toggle on/off gaggin the party chat. Off by default. (ONLY USE IF YOU PUSH YOUR CHAT TO A UI WINDOW)
+3.  Optional: `zTC <caller1> <caller2>` - Will set backup/alternate target callers to follow. ONLY 3 MAX INCLUDING LEADER.
+4. `zA` - Toggle on 'auto' target switching.
+5. `zP` - Toggle on 'auto' target switching to follow leaders targets.
+6. `zSTAT` - Shows the the system status and what is toggled on/off. Toggles are clickable.
+7. `zChannel <pt/party>` - Sets up GC to call to party by default.
+8.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
+9.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
+10.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
+11.  Optional: `zGAG` - Will toggle on/off gaggin the party chat. Off by default. (ONLY USE IF YOU PUSH YOUR CHAT TO A UI WINDOW)
 
 - `zR` - Switches to first target in the target order [THAT IS IN THE ROOM].
 - `zN` - Switch to next target in the order.
@@ -81,9 +82,10 @@ These steps are the quick way to set up the system to follow party target calls.
 To set up the system to lead. Follow the above steps, plus:
 
 1. `zL <ME>` - Sets you as the group leader. You will echo all target switches to the party. (`zLOUD` is does not need to be toggled on.)
-2. `zBW <city name or first letter>` - Auto adds everyone from a city to target list.
-3. `zCITY <city name of first letter>` - Sets primary target city.
-4. `zADD <enemy> / zMULTI <enemy> <enemy> <enemy>` - Manually adds enemy/enemies to target list.
+2.  Optional: `zTC <caller1> caller2` - Will set backup/alternate target callers to follow. ONLY 3 MAX INCLUDING LEADER.
+3. `zBW <city name or first letter>` - Auto adds everyone from a city to target list.
+4. `zCITY <city name of first letter>` - Sets primary target city.
+5. `zADD <enemy> / zMULTI <enemy> <enemy> <enemy>` - Manually adds enemy/enemies to target list.
    (Alternative) `zBW <city>` - Adds all online members of the target city to the target list.
 6. `zENEMY` - Enemies everyone in the target list (if not done automatically via `zAUTO`).
 7. `zORDER` - Show target list and set target order.
@@ -103,6 +105,7 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zS/zSTAT`          - Raid system info
 - `zHELPS`            - Display all commands
 - `zL <name or 'Me'>` - Set leader
+- `zTC <caller1> <caller2>` - Will set backup/alternate target callers to follow. ONLY 3 MAX INCLUDING LEADER.
 - `zORDER`            - List target order for reordering.
 - `zCALL(F)`          - Call target order, F forces announce.
 - `zC(F)`             - Call current target, F forces announce.
