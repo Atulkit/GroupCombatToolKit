@@ -26,7 +26,7 @@ Disable/Replace:
 ### Affliction Calling Setup
 This requires the AK package to run. `Group Combat Scripts` should now automatically update the `ocscore edit functions` in the AK scripts. If it is doesn't then:
 - Navigate to `oscore edit functions` in Scripts > AK > AK Opponent Tracking > Multiuse Functions > `oscore edit functions`
-- Immediately under the beginning of the function `function OppGainedAff(aff,source)` paste the following code
+- At the beginning of the function `function OppGainedAff(aff,source)`  and after the line `if not aff then return end` paste the following code
 ```
   -- Party Aff Tracking for Group Combat (needs tweaking)
   if isActive("Group Combat", "trigger") == 1 then
