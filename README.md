@@ -101,7 +101,7 @@ To set up the system to lead. Follow the above steps, plus:
 
 List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` will give the full and up to date list in game.
 
-- Basic Commands
+#### Basic Commands
 
 - `zON/OFF`           - Raid system all on or off.
 - `zS/zSTAT`          - Raid system info.
@@ -111,24 +111,24 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zRESET`            - Empty target list.
 - `zRE`               - Reset QL room gag without clearing target order
 
--  Target Following  
--  Always set a leader to follow targeting orders  
+#### Target Following  
+Always set a leader to follow targeting orders  
 
 - `zL <name or 'Me'>` - Set leader
 - `zTC <caller1> <caller2>` - Will set backup/alternate target callers to follow. ONLY 3 MAX INCLUDING LEADER.
 - `zA`                - Turn on target switching. If your target dies it will auto switch for you!
 - `zP,zPAUTO/MANUAL`  - Setting for party leader target switching. Will swap to leaders targets as they call them.
 
--  Targeting Commands  
--  Aliases to switch to targets in the target order.
+#### Targeting Commands  
+Aliases to switch to targets in the target order.
 
 - `zN,zF,z#`          - Next, First, Position target.
 - `zT <partial name>` - Target with only first few letters.
 - `zT`                - Manual target last leader target call.
 - `zR`                - Check the room for the highest ordered target and target them.
 
--  Target Order Commands  
--  If a leader is set using zL alias, target order will populate if they call it to the party.
+#### Target Order Commands
+If a leader is set using zL alias, target order will populate if they call it to the party.
 
 - `zADD <name (#)>`   - Add enemy to list at end or into a spot.
 - `zMULTI <name>, <name>, <name>, etc` - Add several enemies at once.
@@ -140,7 +140,7 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zBW <city letter>` - Add complete city to target order.
 - `zAR (h|m|t|a|c|e|r|all)` - Adds new people in room from that city to target list.
 
--  Leadership Commands
+#### Leadership Commands
 
 - `zORDER`            - List target order for reordering.
 - `zCALL(F)`          - Call target order, F forces announce.
@@ -148,8 +148,8 @@ List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` w
 - `zGROUP`            - Report leaders, target, target list, callers, and more to party.
 - `zLOUD`             - Make yourself call as if you were leader but not set to lead.
 
--  Reporting Commands  
--  These are optional. If you are using channeled abilities, make sure these are off.
+#### Reporting Commands  
+These are optional. If you are using channeled abilities, make sure these are off.
 
 - `zREPORT`           - Toggle on/off reporting target movement, affliction, and wall callouts all at once.
 - `zMOVE`             - Toggle reporting target movement.
