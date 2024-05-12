@@ -56,19 +56,19 @@ This requires the AK package to run. `Group Combat Scripts` should now automatic
 
 
 ## Setting up to follow party targets
-These steps are the quick way to set up the system to follow party target calls.
+These steps are the quick way to set up the system to follow party target calls. `zSETUP` will show a basic walkthrough to get you following targets.
 
 1. `zOn` - Turns the system on.
 2. `zL <player>` - Designate group leader. You will follow their targets, auto add their target list if they call it.
 3.  Optional: `zTC <caller1> <caller2>` - Will set backup/alternate target callers to follow. ONLY 3 MAX INCLUDING LEADER.
 4. `zA` - Toggle on 'auto' target switching.
 5. `zP` - Toggle on 'auto' target switching to follow leaders targets.
-6. `zSTAT` - Shows the the system status and what is toggled on/off. Toggles are clickable.
-7. `zChannel <pt/party>` - Sets up GC to call to party by default.
-8.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
-9.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
-10.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
-11.  Optional: `zGAG` - Will toggle on/off gaggin the party chat. Off by default. (ONLY USE IF YOU PUSH YOUR CHAT TO A UI WINDOW)
+7. `zSTAT` - Shows the the system status and what is toggled on/off. Toggles are clickable.
+8. `zChannel <pt/party>` - Sets up GC to call to party by default.
+9.  Optional: `zADD <enemy>` - Will add enemy to target list and auto enemy them.
+10.  Optional: `zREPORT` - Will toggle on/off target movement, afflictions, and wall callouts.
+11.  Optional: `zLOUD` - Will echo your target switches to the party if not leading (ONLY USE TO AID IN TARGET CALLING).
+12.  Optional: `zGAG` - Will toggle on/off gaggin the party chat. Off by default. (ONLY USE IF YOU PUSH YOUR CHAT TO A UI WINDOW)
 
 - `zR` - Switches to first target in the target order [THAT IS IN THE ROOM].
 - `zN` - Switch to next target in the order.
@@ -101,46 +101,61 @@ To set up the system to lead. Follow the above steps, plus:
 
 List of aliases to toggle things on and set up the system. `zHELP` or `zHELP2` will give the full and up to date list in game.
 
-- `zON/OFF`           - Raid system all on or off
-- `zS/zSTAT`          - Raid system info
-- `zHELPS`            - Display all commands
+- Basic Commands
+
+- `zON/OFF`           - Raid system all on or off.
+- `zS/zSTAT`          - Raid system info.
+- `zHELPS`            - Display all commands.
+- `zGAG`              - Gags party gag to reduce spam. ONLY USE IF YOU PUSH CHAT TO A UI WINDOW.
+- `zCHANNEL <channel>`- Sets the channel where targets and callouts will be reported.
+- `zRESET`            - Empty target list.
+- `zRE`               - Reset QL room gag without clearing target order
+
+-  Target Following  
+-  Always set a leader to follow targeting orders  
+
 - `zL <name or 'Me'>` - Set leader
 - `zTC <caller1> <caller2>` - Will set backup/alternate target callers to follow. ONLY 3 MAX INCLUDING LEADER.
-- `zORDER`            - List target order for reordering.
-- `zCALL(F)`          - Call target order, F forces announce.
-- `zC(F)`             - Call current target, F forces announce.
-- `zGROUP`            - Report leaders, target, target list, callers, and more to party.
+- `zA`                - Turn on target switching. If your target dies it will auto switch for you!
+- `zP,zPAUTO/MANUAL`  - Setting for party leader target switching. Will swap to leaders targets as they call them.
+
+-  Targeting Commands  
+-  Aliases to switch to targets in the target order.
+
+- `zN,zF,z#`          - Next, First, Position target.
+- `zT <partial name>` - Target with only first few letters.
+- `zT`                - Manual target last leader target call.
+- `zR`                - Check the room for the highest ordered target and target them.
+
+-  Target Order Commands  
+-  If a leader is set using zL alias, target order will populate if they call it to the party.
+
 - `zADD <name (#)>`   - Add enemy to list at end or into a spot.
 - `zMULTI <name>, <name>, <name>, etc` - Add several enemies at once.
 - `zREMOVE <name>`    - Remove enemy from list.
 - `zSWAP <name> <#>`  - Manual reordering person to a position.
 - `zENEMY`            - Enemies the target list.
 - `zAUTO`             - Enable setting enemies automatically.
-- `zA`                - Turn on target switching. If your target dies it will auto switch for you!
-- `zN,zF,z#`          - Next, First, Position target.
-- `zT <partial name>` - Target with only first few letters.
-- `zP,zPAUTO/MANUAL`  - Setting for party leader target switching. Will swap to leaders targets as they call them.
-- `zT`                - Manual target last leader target call.
-- `zR`                - Check the room for the highest ordered target and target them.
-- `zLOUD`             - Make yourself call as if you were leader but not set to lead.
+- `zCITY <CITY>`      - Change default city to add room targets from.
 - `zBW <city letter>` - Add complete city to target order.
 - `zAR (h|m|t|a|c|e|r|all)` - Adds new people in room from that city to target list.
-- `zRESET`            - Empty target list.
+
+-  Leadership Commands
+
+- `zORDER`            - List target order for reordering.
+- `zCALL(F)`          - Call target order, F forces announce.
+- `zC(F)`             - Call current target, F forces announce.
+- `zGROUP`            - Report leaders, target, target list, callers, and more to party.
+- `zLOUD`             - Make yourself call as if you were leader but not set to lead.
+
+-  Reporting Commands  
+-  These are optional. If you are using channeled abilities, make sure these are off.
+
 - `zREPORT`           - Toggle on/off reporting target movement, affliction, and wall callouts all at once.
 - `zMOVE`             - Toggle reporting target movement.
 - `zAFFS`             - Toggle reporting afflictions.
 - `zWALLS`            - Toggle highlighting walls.
-- `zCITY <CITY>`      - Change default city to add room targets from.
-- `zLIST`             - Display saved lists to use.
-- `zGAG`              - Gags party gag to reduce spam. ONLY USE IF YOU PUSH CHAT TO A UI WINDOW.
-- `zCHANNEL <channel>`- Sets the channel where targets and callouts will be reported to 
-- `zDELETE <name>`    - Delete a preset
-- `zSAVE <name>`      - Save target order for future
-- `zLOAD <name>`      - Load only those in realms into order
-- `zSET <name>`       - Replicate saved target order
-- `zSS`               - Force save settings
-- `zLS`               - Force load settings
-- `zRE`               - Reset QL room gag without clearing target order
+
 
 ## Miscellaneous
 
